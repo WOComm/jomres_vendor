@@ -5,6 +5,11 @@ use PHPUnit\Framework\TestCase;
 
 class SingleEventsTest extends TestCase
 {
+    // phpcs:disable Generic.Arrays.DisallowLongArraySyntax
+    // phpcs:disable PSR1.Methods.CamelCapsMethodName.NotCamelCaps
+    // phpcs:disable Squiz.Commenting.FunctionComment
+    // phpcs:disable Squiz.Commenting.VariableComment
+
     private $originalTimeZone = null;
 
     public function setUp()
@@ -113,9 +118,7 @@ class SingleEventsTest extends TestCase
             'disableCharacterReplacement' => false,            // Default value
             'filterDaysAfter'             => null,             // Default value
             'filterDaysBefore'            => null,             // Default value
-            'replaceWindowsTimeZoneIds'   => false,            // Default value
             'skipRecurrence'              => false,            // Default value
-            'useTimeZoneWithRRules'       => false,            // Default value
         );
 
         return $options;

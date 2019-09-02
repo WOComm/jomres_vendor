@@ -1,5 +1,5 @@
 <?php
-// phpcs:disable Generic.Arrays.DisallowLongArraySyntax.Found
+// phpcs:disable Generic.Arrays.DisallowLongArraySyntax
 
 require_once '../vendor/autoload.php';
 
@@ -13,17 +13,13 @@ try {
         'disableCharacterReplacement' => false, // Default value
         'filterDaysAfter'             => null,  // Default value
         'filterDaysBefore'            => null,  // Default value
-        'replaceWindowsTimeZoneIds'   => false, // Default value
         'skipRecurrence'              => false, // Default value
-        'useTimeZoneWithRRules'       => false, // Default value
     ));
     // $ical->initFile('ICal.ics');
     // $ical->initUrl('https://raw.githubusercontent.com/u01jmg3/ics-parser/master/examples/ICal.ics', $username = null, $password = null, $userAgent = null);
 } catch (\Exception $e) {
     die($e);
 }
-
-$forceTimeZone = false;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -81,7 +77,7 @@ $forceTimeZone = false;
             <div class="thumbnail">
                 <div class="caption">
                     <h3><?php
-                        $dtstart = $ical->iCalDateToDateTime($event->dtstart_array[3], $forceTimeZone);
+                        $dtstart = $ical->iCalDateToDateTime($event->dtstart_array[3]);
                         echo $event->summary . ' (' . $dtstart->format('d-m-Y H:i') . ')';
                     ?></h3>
                     <?php echo $event->printData() ?>
@@ -118,7 +114,7 @@ $forceTimeZone = false;
             <div class="thumbnail">
                 <div class="caption">
                     <h3><?php
-                        $dtstart = $ical->iCalDateToDateTime($event->dtstart_array[3], $forceTimeZone);
+                        $dtstart = $ical->iCalDateToDateTime($event->dtstart_array[3]);
                         echo $event->summary . ' (' . $dtstart->format('d-m-Y H:i') . ')';
                     ?></h3>
                     <?php echo $event->printData() ?>
@@ -154,7 +150,7 @@ $forceTimeZone = false;
             <div class="thumbnail">
                 <div class="caption">
                     <h3><?php
-                        $dtstart = $ical->iCalDateToDateTime($event->dtstart_array[3], $forceTimeZone);
+                        $dtstart = $ical->iCalDateToDateTime($event->dtstart_array[3]);
                         echo $event->summary . ' (' . $dtstart->format('d-m-Y H:i') . ')';
                     ?></h3>
                     <?php echo $event->printData() ?>

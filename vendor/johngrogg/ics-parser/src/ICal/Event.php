@@ -4,7 +4,7 @@ namespace ICal;
 
 class Event
 {
-    // phpcs:disable Generic.Arrays.DisallowLongArraySyntax.Found
+    // phpcs:disable Generic.Arrays.DisallowLongArraySyntax
 
     const HTML_TEMPLATE = '<p>%s: %s</p>';
 
@@ -196,7 +196,7 @@ class Event
     protected static function snakeCase($input, $glue = '_', $separator = '-')
     {
         $input = preg_split('/(?<=[a-z])(?=[A-Z])/x', $input);
-        $input = join($input, $glue);
+        $input = implode($input, $glue);
         $input = str_replace($separator, $glue, $input);
 
         return strtolower($input);
