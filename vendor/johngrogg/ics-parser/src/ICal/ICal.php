@@ -7,7 +7,7 @@
  *
  * @author  Jonathan Goode <https://github.com/u01jmg3>
  * @license https://opensource.org/licenses/mit-license.php MIT License
- * @version 2.1.13
+ * @version 2.1.15
  */
 
 namespace ICal;
@@ -1309,13 +1309,13 @@ class ICal
                         break;
 
                     case 'WEEKLY':
-                        $matchingDays = array($frequencyRecurringDateTime->format('N'));
+                        $initialDayOfWeek = $frequencyRecurringDateTime->format('N');
+                        $matchingDays     = array($initialDayOfWeek);
+
                         if (!empty($rrules['BYDAY'])) {
-                            // setISODate below uses the ISO-8601 specification of weeks: start on
+                            // setISODate() below uses the ISO-8601 specification of weeks: start on
                             // a Monday, end on a Sunday. However, RRULEs (or the caller of the
-                            // parser) may state an alternate WeeKSTart. In this case, we need to
-                            // determine the point where days that ordinarily come after Monday now
-                            // come before Monday.
+                            // parser) may state an alternate WeeKSTart.
                             $wkstTransition = 7;
 
                             if (empty($rrules['WKST'])) {
@@ -1327,17 +1327,24 @@ class ICal
                             }
 
                             $matchingDays = array_map(
-                                function ($weekday) use ($wkstTransition) {
+                                function ($weekday) use ($initialDayOfWeek, $wkstTransition, $interval) {
                                     $day = array_search($weekday, array_keys($this->weekdays));
+
+                                    if ($day < $initialDayOfWeek) {
+                                        $day += 7;
+                                    }
+
                                     if ($day >= $wkstTransition) {
-                                        $day -= 7;
+                                        $day += 7 * ($interval - 1);
                                     }
 
                                     // Ignoring alternate week starts, $day at this point will have a
-                                    // value between 0 and 6. But setISODate expects a value 1 to 7.
+                                    // value between 0 and 6. But setISODate() expects a value of 1 to 7.
                                     // Even with alternate week starts, we still need to +1 to set the
                                     // correct weekday.
-                                    return $day + 1;
+                                    $day += 1;
+
+                                    return $day;
                                 },
                                 $rrules['BYDAY']
                             );
@@ -1353,7 +1360,6 @@ class ICal
                                 $day
                             );
                         }
-
                         break;
 
                     case 'MONTHLY':
@@ -1382,7 +1388,6 @@ class ICal
                                 $day
                             );
                         }
-
                         break;
 
                     case 'YEARLY':
@@ -1415,7 +1420,6 @@ class ICal
                         } else {
                             $candidateDateTimes[] = clone $frequencyRecurringDateTime;
                         }
-
                         break;
                 }
 

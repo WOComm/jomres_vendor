@@ -78,6 +78,8 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionCodePipeline(array $args = [])
  * @method \Aws\CodeStar\CodeStarClient createCodeStar(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionCodeStar(array $args = [])
+ * @method \Aws\CodeStarNotifications\CodeStarNotificationsClient createCodeStarNotifications(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionCodeStarNotifications(array $args = [])
  * @method \Aws\CognitoIdentity\CognitoIdentityClient createCognitoIdentity(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionCognitoIdentity(array $args = [])
  * @method \Aws\CognitoIdentityProvider\CognitoIdentityProviderClient createCognitoIdentityProvider(array $args = [])
@@ -100,6 +102,8 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionDAX(array $args = [])
  * @method \Aws\DLM\DLMClient createDLM(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionDLM(array $args = [])
+ * @method \Aws\DataExchange\DataExchangeClient createDataExchange(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionDataExchange(array $args = [])
  * @method \Aws\DataPipeline\DataPipelineClient createDataPipeline(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionDataPipeline(array $args = [])
  * @method \Aws\DataSync\DataSyncClient createDataSync(array $args = [])
@@ -234,6 +238,8 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionMacie(array $args = [])
  * @method \Aws\ManagedBlockchain\ManagedBlockchainClient createManagedBlockchain(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionManagedBlockchain(array $args = [])
+ * @method \Aws\MarketplaceCatalog\MarketplaceCatalogClient createMarketplaceCatalog(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionMarketplaceCatalog(array $args = [])
  * @method \Aws\MarketplaceCommerceAnalytics\MarketplaceCommerceAnalyticsClient createMarketplaceCommerceAnalytics(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionMarketplaceCommerceAnalytics(array $args = [])
  * @method \Aws\MarketplaceEntitlementService\MarketplaceEntitlementServiceClient createMarketplaceEntitlementService(array $args = [])
@@ -286,6 +292,10 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionPolly(array $args = [])
  * @method \Aws\Pricing\PricingClient createPricing(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionPricing(array $args = [])
+ * @method \Aws\QLDB\QLDBClient createQLDB(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionQLDB(array $args = [])
+ * @method \Aws\QLDBSession\QLDBSessionClient createQLDBSession(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionQLDBSession(array $args = [])
  * @method \Aws\QuickSight\QuickSightClient createQuickSight(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionQuickSight(array $args = [])
  * @method \Aws\RAM\RAMClient createRAM(array $args = [])
@@ -314,10 +324,16 @@ namespace Aws;
  * @method \Aws\S3\S3MultiRegionClient createMultiRegionS3(array $args = [])
  * @method \Aws\S3Control\S3ControlClient createS3Control(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionS3Control(array $args = [])
+ * @method \Aws\SSO\SSOClient createSSO(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionSSO(array $args = [])
+ * @method \Aws\SSOOIDC\SSOOIDCClient createSSOOIDC(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionSSOOIDC(array $args = [])
  * @method \Aws\SageMaker\SageMakerClient createSageMaker(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionSageMaker(array $args = [])
  * @method \Aws\SageMakerRuntime\SageMakerRuntimeClient createSageMakerRuntime(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionSageMakerRuntime(array $args = [])
+ * @method \Aws\SavingsPlans\SavingsPlansClient createSavingsPlans(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionSavingsPlans(array $args = [])
  * @method \Aws\SecretsManager\SecretsManagerClient createSecretsManager(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionSecretsManager(array $args = [])
  * @method \Aws\SecurityHub\SecurityHubClient createSecurityHub(array $args = [])
@@ -332,6 +348,8 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionServiceQuotas(array $args = [])
  * @method \Aws\Ses\SesClient createSes(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionSes(array $args = [])
+ * @method \Aws\SesV2\SesV2Client createSesV2(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionSesV2(array $args = [])
  * @method \Aws\Sfn\SfnClient createSfn(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionSfn(array $args = [])
  * @method \Aws\Shield\ShieldClient createShield(array $args = [])
@@ -372,6 +390,8 @@ namespace Aws;
  * @method \Aws\MultiRegionClient createMultiRegionWorkLink(array $args = [])
  * @method \Aws\WorkMail\WorkMailClient createWorkMail(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionWorkMail(array $args = [])
+ * @method \Aws\WorkMailMessageFlow\WorkMailMessageFlowClient createWorkMailMessageFlow(array $args = [])
+ * @method \Aws\MultiRegionClient createMultiRegionWorkMailMessageFlow(array $args = [])
  * @method \Aws\WorkSpaces\WorkSpacesClient createWorkSpaces(array $args = [])
  * @method \Aws\MultiRegionClient createMultiRegionWorkSpaces(array $args = [])
  * @method \Aws\XRay\XRayClient createXRay(array $args = [])
@@ -381,7 +401,7 @@ namespace Aws;
  */
 class Sdk
 {
-    const VERSION = '3.110.7';
+    const VERSION = '3.117.2';
 
     /** @var array Arguments for creating clients */
     private $args;
