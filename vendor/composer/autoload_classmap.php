@@ -11,6 +11,8 @@ return array(
     'FilterASCII85' => $vendorDir . '/setasign/fpdi/filters/FilterASCII85.php',
     'FilterASCIIHexDecode' => $vendorDir . '/setasign/fpdi/filters/FilterASCIIHexDecode.php',
     'FilterLZW' => $vendorDir . '/setasign/fpdi/filters/FilterLZW.php',
+    'Stringable' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/Stringable.php',
+    'ValueError' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/ValueError.php',
     'XMLSchema' => $vendorDir . '/fergusean/nusoap/lib/class.xmlschema.php',
     'fpdi_pdf_parser' => $vendorDir . '/setasign/fpdi/fpdi_pdf_parser.php',
     'nusoap_base' => $vendorDir . '/fergusean/nusoap/lib/class.nusoap_base.php',
