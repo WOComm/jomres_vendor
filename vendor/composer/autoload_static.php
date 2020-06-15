@@ -35,6 +35,7 @@ class ComposerStaticInitb0a91641d819b9a69ad43de9ca71dea8
             'Symfony\\Component\\Translation\\' => 30,
             'Symfony\\Component\\Process\\' => 26,
             'Symfony\\Component\\OptionsResolver\\' => 34,
+            'Stripe\\' => 7,
         ),
         'R' => 
         array (
@@ -113,6 +114,10 @@ class ComposerStaticInitb0a91641d819b9a69ad43de9ca71dea8
         'Symfony\\Component\\OptionsResolver\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/options-resolver',
+        ),
+        'Stripe\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/stripe/stripe-php/lib',
         ),
         'ReCaptcha\\' => 
         array (
