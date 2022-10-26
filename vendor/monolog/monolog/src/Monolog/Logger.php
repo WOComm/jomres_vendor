@@ -317,15 +317,13 @@ class Logger implements LoggerInterface, ResettableInterface
             static::$timezone = new \DateTimeZone(date_default_timezone_get() ?: 'UTC');
         }
 
-	// Vince commented as this causes a depreciated notice in php8.1
         // php7.1+ always has microseconds enabled, so we do not need this hack
-/*        if ($this->microsecondTimestamps && PHP_VERSION_ID < 70100) {
+        if ($this->microsecondTimestamps && PHP_VERSION_ID < 70100) {
             $ts = \DateTime::createFromFormat('U.u', sprintf('%.6F', microtime(true)), static::$timezone);
         } else {
-            $ts = new \DateTime(null, static::$timezone);
+            $ts = new \DateTime("now", static::$timezone);
         }
-        $ts->setTimezone(static::$timezone);*/
-
+        $ts->setTimezone(static::$timezone);
 
         $record = array(
             'message' => (string) $message,
@@ -333,7 +331,7 @@ class Logger implements LoggerInterface, ResettableInterface
             'level' => $level,
             'level_name' => $levelName,
             'channel' => $this->name,
-            'datetime' => sprintf('%.6F', microtime(true)),
+            'datetime' => $ts,
             'extra' => array(),
         );
 
