@@ -119,6 +119,7 @@
 		/**
 		 * Resets the collection.
 		 */
+		#[\ReturnTypeWillChange]
 		public function rewind() {
 			reset($this->data);
 		}
@@ -128,6 +129,7 @@
 		 *
 		 * @return mixed Value
 		 */
+		#[\ReturnTypeWillChange]
 		public function current() {
 			return current($this->data);
 		}
@@ -137,6 +139,7 @@
 		 *
 		 * @return mixed Value
 		 */
+		#[\ReturnTypeWillChange]
 		public function key() {
 			return key($this->data);
 		}
@@ -146,6 +149,7 @@
 		 *
 		 * @return mixed Value
 		 */
+		#[\ReturnTypeWillChange]
 		public function next()
 		{
 			return next($this->data);
