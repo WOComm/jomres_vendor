@@ -160,6 +160,7 @@
 		 *
 		 * @return bool Key status
 		 */
+		#[\ReturnTypeWillChange]
 		public function valid()
 		{
 			$key = key($this->data);
@@ -171,6 +172,7 @@
 		 *
 		 * @return int Collection size
 		 */
+		#[\ReturnTypeWillChange]
 		public function count() {
 			return sizeof($this->data);
 		}
