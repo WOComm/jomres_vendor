@@ -39,6 +39,7 @@
  * without a lot of lookaheads to see when a tag is closed. This is a
  * limitation of the token system and some workarounds would be nice.
  */
+#[AllowDynamicProperties]
 class HTMLPurifier_Lexer
 {
 
@@ -351,7 +352,7 @@ class HTMLPurifier_Lexer
         $hidden_elements = $config->get('Core.HiddenElements');
         if ($config->get('Core.AggressivelyRemoveScript') &&
             !($config->get('HTML.Trusted') || !$config->get('Core.RemoveScriptContents')
-            || empty($hidden_elements["script"]))) {
+                || empty($hidden_elements["script"]))) {
             $html = preg_replace('#<script[^>]*>.*?</script>#i', '', $html);
         }
 
