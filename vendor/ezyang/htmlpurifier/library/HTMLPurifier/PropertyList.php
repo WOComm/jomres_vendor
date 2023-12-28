@@ -1,5 +1,5 @@
 <?php
-
+#[AllowDynamicProperties]
 /**
  * Generic property list implementation
  */

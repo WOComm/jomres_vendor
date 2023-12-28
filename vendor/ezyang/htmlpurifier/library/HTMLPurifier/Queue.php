@@ -1,5 +1,5 @@
 <?php
-
+#[AllowDynamicProperties]
 /**
  * A simple array-backed queue, based off of the classic Okasaki
  * persistent amortized queue.  The basic idea is to maintain two

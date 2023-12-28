@@ -1,5 +1,5 @@
 <?php
-
+#[AllowDynamicProperties]
 /**
  * Class that handles operations involving percent-encoding in URIs.
  *

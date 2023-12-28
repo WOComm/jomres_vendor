@@ -1,5 +1,5 @@
 <?php
-
+#[AllowDynamicProperties]
 /* W3C says:
     [ // adjective and number must be in correct order, even if
       // you could switch them without introducing ambiguity.

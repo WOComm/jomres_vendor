@@ -1,5 +1,5 @@
 <?php
-
+#[AllowDynamicProperties]
 /**
  * A UTF-8 specific character encoder that handles cleaning and transforming.
  * @note All functions in this class should be static.

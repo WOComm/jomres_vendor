@@ -1,5 +1,5 @@
 <?php
-
+#[AllowDynamicProperties]
 /**
  * Validates arbitrary text according to the HTML spec.
  */

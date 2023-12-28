@@ -1,5 +1,5 @@
 <?php
-
+#[AllowDynamicProperties]
 class HTMLPurifier_URIDefinition extends HTMLPurifier_Definition
 {
 

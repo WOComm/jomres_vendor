@@ -1,5 +1,5 @@
 <?php
-
+#[AllowDynamicProperties]
 /**
  * Global exception class for HTML Purifier; any exceptions we throw
  * are from here.

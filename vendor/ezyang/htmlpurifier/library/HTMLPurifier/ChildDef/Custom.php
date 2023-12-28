@@ -1,5 +1,5 @@
 <?php
-
+#[AllowDynamicProperties]
 /**
  * Custom validation class, accepts DTD child definitions
  *

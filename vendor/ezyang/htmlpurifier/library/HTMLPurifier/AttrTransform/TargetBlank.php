@@ -1,5 +1,5 @@
 <?php
-
+#[AllowDynamicProperties]
 // must be called POST validation
 
 /**

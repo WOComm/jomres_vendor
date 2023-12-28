@@ -1,5 +1,5 @@
 <?php
-
+#[AllowDynamicProperties]
 /**
  * Class for converting between different unit-lengths as specified by
  * CSS.

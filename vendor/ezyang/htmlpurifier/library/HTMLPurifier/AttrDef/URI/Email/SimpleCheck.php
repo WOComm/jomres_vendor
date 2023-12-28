@@ -1,5 +1,5 @@
 <?php
-
+#[AllowDynamicProperties]
 /**
  * Primitive email validation class based on the regexp found at
  * http://www.regular-expressions.info/email.html

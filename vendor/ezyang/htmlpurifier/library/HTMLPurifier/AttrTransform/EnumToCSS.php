@@ -1,5 +1,5 @@
 <?php
-
+#[AllowDynamicProperties]
 /**
  * Generic pre-transform that converts an attribute with a fixed number of
  * values (enumerated) to CSS.

@@ -17,7 +17,7 @@
  * Nota bene: the current class gets confused if you try to store NULLs
  * in the list.
  */
-
+#[AllowDynamicProperties]
 class HTMLPurifier_Zipper
 {
     public $front, $back;

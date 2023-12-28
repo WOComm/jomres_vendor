@@ -1,5 +1,5 @@
 <?php
-
+#[AllowDynamicProperties]
 /**
  * Pre-transform that changes deprecated bgcolor attribute to CSS.
  */

@@ -1,5 +1,5 @@
 <?php
-
+#[AllowDynamicProperties]
 /**
  * Generic schema interchange format that can be converted to a runtime
  * representation (HTMLPurifier_ConfigSchema) or HTML documentation. Members

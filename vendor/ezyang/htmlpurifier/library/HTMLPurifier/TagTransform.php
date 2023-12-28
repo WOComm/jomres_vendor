@@ -1,5 +1,5 @@
 <?php
-
+#[AllowDynamicProperties]
 /**
  * Defines a mutation of an obsolete tag into a valid tag.
  */

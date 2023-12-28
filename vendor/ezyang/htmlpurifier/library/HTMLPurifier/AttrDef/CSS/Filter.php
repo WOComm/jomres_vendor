@@ -1,5 +1,5 @@
 <?php
-
+#[AllowDynamicProperties]
 /**
  * Microsoft's proprietary filter: CSS property
  * @note Currently supports the alpha filter. In the future, this will

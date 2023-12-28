@@ -1,5 +1,5 @@
 <?php
-
+#[AllowDynamicProperties]
 /**
  * Validates name/value pairs in param tags to be used in safe objects. This
  * will only allow name values it recognizes, and pre-fill certain attributes

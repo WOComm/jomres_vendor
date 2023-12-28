@@ -1,5 +1,5 @@
 <?php
-
+#[AllowDynamicProperties]
 /**
  * Definition cache decorator class that cleans up the cache
  * whenever there is a cache miss.

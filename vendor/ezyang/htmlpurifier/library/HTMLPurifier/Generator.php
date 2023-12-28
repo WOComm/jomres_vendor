@@ -1,5 +1,5 @@
 <?php
-
+#[AllowDynamicProperties]
 /**
  * Generates HTML from tokens.
  * @todo Refactor interface so that configuration/context is determined

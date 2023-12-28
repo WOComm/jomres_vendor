@@ -1,5 +1,5 @@
 <?php
-
+#[AllowDynamicProperties]
 /**
  * Class responsible for generating HTMLPurifier_Language objects, managing
  * caching and fallbacks.

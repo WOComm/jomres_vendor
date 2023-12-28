@@ -1,5 +1,5 @@
 <?php
-
+#[AllowDynamicProperties]
 /**
  * Represents a document type, contains information on which modules
  * need to be loaded.

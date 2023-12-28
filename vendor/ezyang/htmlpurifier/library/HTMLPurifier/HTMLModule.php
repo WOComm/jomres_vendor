@@ -14,7 +14,7 @@
  *       objects (include it anyway if that's the correspondence though).
  * @todo Consider making some member functions protected
  */
-
+#[AllowDynamicProperties]
 class HTMLPurifier_HTMLModule
 {
 

@@ -1,5 +1,5 @@
 <?php
-
+#[AllowDynamicProperties]
 /**
  * Component of HTMLPurifier_AttrContext that accumulates IDs to prevent dupes
  * @note In Slashdot-speak, dupe means duplicate.

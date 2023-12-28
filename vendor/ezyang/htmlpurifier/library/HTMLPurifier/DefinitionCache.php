@@ -1,5 +1,5 @@
 <?php
-
+#[AllowDynamicProperties]
 /**
  * Abstract class representing Definition cache managers that implements
  * useful common methods and is a factory.

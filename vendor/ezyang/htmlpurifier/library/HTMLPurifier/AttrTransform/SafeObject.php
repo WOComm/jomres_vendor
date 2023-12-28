@@ -1,5 +1,5 @@
 <?php
-
+#[AllowDynamicProperties]
 /**
  * Writes default type for all objects. Currently only supports flash.
  */

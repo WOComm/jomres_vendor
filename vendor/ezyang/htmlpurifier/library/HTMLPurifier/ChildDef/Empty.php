@@ -1,5 +1,5 @@
 <?php
-
+#[AllowDynamicProperties]
 /**
  * Definition that disallows all elements.
  * @warning validateChildren() in this class is actually never called, because

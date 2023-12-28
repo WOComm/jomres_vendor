@@ -1,5 +1,5 @@
 <?php
-
+#[AllowDynamicProperties]
 /**
  * Allows multiple validators to attempt to validate attribute.
  *

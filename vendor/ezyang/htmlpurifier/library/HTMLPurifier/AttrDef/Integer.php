@@ -1,5 +1,5 @@
 <?php
-
+#[AllowDynamicProperties]
 /**
  * Validates an integer.
  * @note While this class was modeled off the CSS definition, no currently

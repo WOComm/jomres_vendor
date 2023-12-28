@@ -1,5 +1,5 @@
 <?php
-
+#[AllowDynamicProperties]
 /**
  * Structure that stores an HTML element definition. Used by
  * HTMLPurifier_HTMLDefinition and HTMLPurifier_HTMLModule.

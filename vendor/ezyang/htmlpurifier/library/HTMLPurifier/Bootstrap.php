@@ -19,7 +19,7 @@ if (!defined('PHP_EOL')) {
             define('PHP_EOL', "\n");
     }
 }
-
+#[AllowDynamicProperties]
 /**
  * Bootstrap class that contains meta-functionality for HTML Purifier such as
  * the autoload function.

@@ -1,5 +1,5 @@
 <?php
-
+#[AllowDynamicProperties]
 /**
  * Represents a measurable length, with a string numeric magnitude
  * and a unit. This object is immutable.

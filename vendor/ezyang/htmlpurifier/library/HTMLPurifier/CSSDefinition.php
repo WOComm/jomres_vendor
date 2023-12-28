@@ -1,5 +1,5 @@
 <?php
-
+#[AllowDynamicProperties]
 /**
  * Defines allowed CSS attributes and what their values are.
  * @see HTMLPurifier_HTMLDefinition

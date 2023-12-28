@@ -1,5 +1,5 @@
 <?php
-
+#[AllowDynamicProperties]
 // OUT OF DATE, NEEDS UPDATING!
 // USE XMLWRITER!
 

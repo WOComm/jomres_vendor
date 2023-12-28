@@ -1,5 +1,5 @@
 <?php
-
+#[AllowDynamicProperties]
 class HTMLPurifier_AttrTransform_SafeEmbed extends HTMLPurifier_AttrTransform
 {
     /**

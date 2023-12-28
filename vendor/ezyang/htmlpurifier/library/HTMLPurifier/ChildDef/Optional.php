@@ -1,5 +1,5 @@
 <?php
-
+#[AllowDynamicProperties]
 /**
  * Definition that allows a set of elements, and allows no children.
  * @note This is a hack to reuse code from HTMLPurifier_ChildDef_Required,

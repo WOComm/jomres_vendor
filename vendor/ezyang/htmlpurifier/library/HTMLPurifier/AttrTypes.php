@@ -1,5 +1,5 @@
 <?php
-
+#[AllowDynamicProperties]
 /**
  * Provides lookup array of attribute types to HTMLPurifier_AttrDef objects
  */

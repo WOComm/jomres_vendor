@@ -1,5 +1,5 @@
 <?php
-
+#[AllowDynamicProperties]
 /**
  * Performs miscellaneous cross attribute validation and filtering for
  * input elements. This is meant to be a post-transform.

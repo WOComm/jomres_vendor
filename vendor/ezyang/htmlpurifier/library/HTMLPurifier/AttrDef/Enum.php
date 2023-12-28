@@ -1,5 +1,5 @@
 <?php
-
+#[AllowDynamicProperties]
 // Enum = Enumerated
 /**
  * Validates a keyword against a list of valid values.

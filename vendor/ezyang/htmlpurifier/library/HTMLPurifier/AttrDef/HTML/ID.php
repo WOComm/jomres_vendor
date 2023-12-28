@@ -1,5 +1,5 @@
 <?php
-
+#[AllowDynamicProperties]
 /**
  * Validates the HTML attribute ID.
  * @warning Even though this is the id processor, it

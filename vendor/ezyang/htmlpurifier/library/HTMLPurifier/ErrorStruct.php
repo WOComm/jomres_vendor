@@ -1,5 +1,5 @@
 <?php
-
+#[AllowDynamicProperties]
 /**
  * Records errors for particular segments of an HTML document such as tokens,
  * attributes or CSS properties. They can contain error structs (which apply

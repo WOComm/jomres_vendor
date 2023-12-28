@@ -1,5 +1,5 @@
 <?php
-
+#[AllowDynamicProperties]
 /**
  * Validates shorthand CSS property background.
  * @warning Does not support url tokens that have internal spaces.
