@@ -1,5 +1,5 @@
 <?php
-#[AllowDynamicProperties]
+
 /**
  * Forgivingly lexes HTML (SGML-style) markup into tokens.
  *
