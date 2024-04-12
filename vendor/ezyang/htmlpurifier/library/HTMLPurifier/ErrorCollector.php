@@ -1,5 +1,5 @@
 <?php
-#[AllowDynamicProperties]
+
 /**
  * Error collection class that enables HTML Purifier to report HTML
  * problems back to the user

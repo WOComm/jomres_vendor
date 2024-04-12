@@ -8,12 +8,10 @@
  *
  * @author  Jonathan Goode <https://github.com/u01jmg3>
  * @license https://opensource.org/licenses/mit-license.php MIT License
- * @version 2.1.19
+ * @version 2.2.2
  */
 
 namespace ICal;
-
-use Carbon\Carbon;
 
 class ICal
 {
@@ -543,8 +541,10 @@ class ICal
      */
     public function initString($string)
     {
+        $string = str_replace(array("\r\n", "\n\r", "\r"), "\n", $string);
+
         if (empty($this->cal)) {
-            $lines = explode(PHP_EOL, $string);
+            $lines = explode("\n", $string);
 
             $this->initLines($lines);
         } else {
@@ -580,6 +580,7 @@ class ICal
      * @param  string $username
      * @param  string $password
      * @param  string $userAgent
+     * @param  string $acceptLanguage
      * @return ICal
      */
     public function initUrl($url, $username = null, $password = null, $userAgent = null, $acceptLanguage = null)
@@ -853,7 +854,8 @@ class ICal
     {
         $string = implode(PHP_EOL, $lines);
         $string = preg_replace('/' . PHP_EOL . '[ \t]/', '', $string);
-        $lines  = explode(PHP_EOL, $string);
+
+        $lines = explode(PHP_EOL, $string);
 
         return $lines;
     }
@@ -894,7 +896,6 @@ class ICal
                         $this->cal[$key1][$key2][$key3][$keyword] .= ',' . $value;
                     }
                 }
-
                 break;
 
             case 'VEVENT':
@@ -934,7 +935,6 @@ class ICal
                         $this->cal[$key1][$key2][$keyword] .= ',' . $value;
                     }
                 }
-
                 break;
 
             case 'VFREEBUSY':
@@ -957,7 +957,6 @@ class ICal
                 } else {
                     $this->cal[$key1][$key2][$key3][] = $value;
                 }
-
                 break;
 
             case 'VTODO':
@@ -997,7 +996,7 @@ class ICal
             $matches             = str_getcsv($text, ':');
             $combinedValue       = '';
 
-            foreach ($matches as $key => $match) {
+            foreach (array_keys($matches) as $key) {
                 if ($key === 0) {
                     if (!empty($before)) {
                         $matches[$key] = $before . '"' . $matches[$key] . '"';
@@ -1181,7 +1180,7 @@ class ICal
      */
     protected function processEvents()
     {
-        $checks = array();
+        $checks = null;
         $events = (isset($this->cal['VEVENT'])) ? $this->cal['VEVENT'] : array();
 
         if (!empty($events)) {
@@ -1236,10 +1235,8 @@ class ICal
                 unset($checks);
             }
 
-            if (!empty($eventKeysToRemove)) {
-                foreach ($eventKeysToRemove as $eventKeyToRemove) {
-                    $events[$eventKeyToRemove] = null;
-                }
+            foreach ($eventKeysToRemove as $eventKeyToRemove) {
+                $events[$eventKeyToRemove] = null;
             }
 
             $this->cal['VEVENT'] = $events;
@@ -1278,7 +1275,7 @@ class ICal
             $rrules = array();
             foreach (explode(';', $anEvent['RRULE']) as $s) {
                 list($k, $v) = explode('=', $s);
-                if (in_array($k, array('BYSETPOS', 'BYDAY', 'BYMONTHDAY', 'BYMONTH'))) {
+                if (in_array($k, array('BYSETPOS', 'BYDAY', 'BYMONTHDAY', 'BYMONTH', 'BYYEARDAY', 'BYWEEKNO'))) {
                     $rrules[$k] = explode(',', $v);
                 } else {
                     $rrules[$k] = $v;
@@ -1291,15 +1288,25 @@ class ICal
             // Reject RRULE if BYDAY stanza is invalid:
             // > The BYDAY rule part MUST NOT be specified with a numeric value
             // > when the FREQ rule part is not set to MONTHLY or YEARLY.
-            if (isset($rrules['BYDAY']) && !in_array($frequency, array('MONTHLY', 'YEARLY'))) {
-                $allByDayStanzasValid = array_reduce($rrules['BYDAY'], function ($carry, $weekday) {
+            // > Furthermore, the BYDAY rule part MUST NOT be specified with a
+            // > numeric value with the FREQ rule part set to YEARLY when the
+            // > BYWEEKNO rule part is specified.
+            if (isset($rrules['BYDAY'])) {
+                $checkByDays = function ($carry, $weekday) {
                     return $carry && substr($weekday, -2) === $weekday;
-                }, true);
+                };
+                if (!in_array($frequency, array('MONTHLY', 'YEARLY'))) {
+                    if (!array_reduce($rrules['BYDAY'], $checkByDays, true)) {
+                        error_log("ICal::ProcessRecurrences: A {$frequency} RRULE may not contain BYDAY values with numeric prefixes");
 
-                if (!$allByDayStanzasValid) {
-                    error_log("ICal::ProcessRecurrences: A \"{$frequency}\" RRULE should not contain BYDAY values with numeric prefixes");
+                        continue;
+                    }
+                } elseif ($frequency === 'YEARLY' && !empty($rrules['BYWEEKNO'])) {
+                    if (!array_reduce($rrules['BYDAY'], $checkByDays, true)) {
+                        error_log('ICal::ProcessRecurrences: A YEARLY RRULE with a BYWEEKNO part may not contain BYDAY values with numeric prefixes');
 
-                    continue;
+                        continue;
+                    }
                 }
             }
 
@@ -1355,6 +1362,17 @@ class ICal
                 // phpcs:ignore Squiz.ControlStructures.SwitchDeclaration.MissingDefault
                 switch ($frequency) {
                     case 'DAILY':
+                        if (!empty($rrules['BYMONTHDAY'])) {
+                            if (!isset($monthDays)) {
+                                // This variable is unset when we change months (see below)
+                                $monthDays = $this->getDaysOfMonthMatchingByMonthDayRRule($rrules['BYMONTHDAY'], $frequencyRecurringDateTime);
+                            }
+
+                            if (!in_array($frequencyRecurringDateTime->format('j'), $monthDays)) {
+                                break;
+                            }
+                        }
+
                         $candidateDateTimes[] = clone $frequencyRecurringDateTime;
 
                         break;
@@ -1411,14 +1429,21 @@ class ICal
                                 $day
                             );
                         }
-
                         break;
 
                     case 'MONTHLY':
                         $matchingDays = array();
 
                         if (!empty($rrules['BYMONTHDAY'])) {
-                            $matchingDays = $rrules['BYMONTHDAY'];
+                            $matchingDays = $this->getDaysOfMonthMatchingByMonthDayRRule($rrules['BYMONTHDAY'], $frequencyRecurringDateTime);
+                            if (!empty($rrules['BYDAY'])) {
+                                $matchingDays = array_filter(
+                                    $this->getDaysOfMonthMatchingByDayRRule($rrules['BYDAY'], $frequencyRecurringDateTime),
+                                    function ($monthDay) use ($matchingDays) {
+                                        return in_array($monthDay, $matchingDays);
+                                    }
+                                );
+                            }
                         } elseif (!empty($rrules['BYDAY'])) {
                             $matchingDays = $this->getDaysOfMonthMatchingByDayRRule($rrules['BYDAY'], $frequencyRecurringDateTime);
                         }
@@ -1440,40 +1465,79 @@ class ICal
                                 $day
                             );
                         }
-
                         break;
 
                     case 'YEARLY':
+                        $matchingDays = array();
+
                         if (!empty($rrules['BYMONTH'])) {
+                            $bymonthRecurringDatetime = clone $frequencyRecurringDateTime;
                             foreach ($rrules['BYMONTH'] as $byMonth) {
-                                $clonedDateTime = clone $frequencyRecurringDateTime;
-                                $bymonthRecurringDatetime = $clonedDateTime->setDate(
+                                $bymonthRecurringDatetime->setDate(
                                     $frequencyRecurringDateTime->format('Y'),
                                     $byMonth,
                                     $frequencyRecurringDateTime->format('d')
                                 );
 
-                                if (!empty($rrules['BYDAY'])) {
-                                    // Get all days of the month that match the BYDAY rule.
-                                    $matchingDays = $this->getDaysOfMonthMatchingByDayRRule($rrules['BYDAY'], $bymonthRecurringDatetime);
-
-                                    // And add each of them to the list of recurrences
-                                    foreach ($matchingDays as $day) {
-                                        $clonedDateTime = clone $bymonthRecurringDatetime;
-                                        $candidateDateTimes[] = $clonedDateTime->setDate(
-                                            $frequencyRecurringDateTime->format('Y'),
-                                            $bymonthRecurringDatetime->format('m'),
-                                            $day
-                                        );
-                                    }
+                                // Determine the days of the month affected
+                                // (The interaction between BYMONTHDAY and BYDAY is resolved later.)
+                                $monthDays = array();
+                                if (!empty($rrules['BYMONTHDAY'])) {
+                                    $monthDays = $this->getDaysOfMonthMatchingByMonthDayRRule($rrules['BYMONTHDAY'], $bymonthRecurringDatetime);
+                                } elseif (!empty($rrules['BYDAY'])) {
+                                    $monthDays = $this->getDaysOfMonthMatchingByDayRRule($rrules['BYDAY'], $bymonthRecurringDatetime);
                                 } else {
-                                    $candidateDateTimes[] = clone $bymonthRecurringDatetime;
+                                    $monthDays[] = $bymonthRecurringDatetime->format('d');
+                                }
+
+                                // And add each of them to the list of recurrences
+                                foreach ($monthDays as $day) {
+                                    $matchingDays[] = $bymonthRecurringDatetime->setDate(
+                                        $frequencyRecurringDateTime->format('Y'),
+                                        $bymonthRecurringDatetime->format('m'),
+                                        $day
+                                    )->format('z') + 1;
                                 }
                             }
-                        } else {
-                            $candidateDateTimes[] = clone $frequencyRecurringDateTime;
+                        } elseif (!empty($rrules['BYWEEKNO'])) {
+                            $matchingDays = $this->getDaysOfYearMatchingByWeekNoRRule($rrules['BYWEEKNO'], $frequencyRecurringDateTime);
+                        } elseif (!empty($rrules['BYYEARDAY'])) {
+                            $matchingDays = $this->getDaysOfYearMatchingByYearDayRRule($rrules['BYYEARDAY'], $frequencyRecurringDateTime);
+                        } elseif (!empty($rrules['BYMONTHDAY'])) {
+                            $matchingDays = $this->getDaysOfYearMatchingByMonthDayRRule($rrules['BYMONTHDAY'], $frequencyRecurringDateTime);
                         }
 
+                        if (!empty($rrules['BYDAY'])) {
+                            if (!empty($rrules['BYYEARDAY']) || !empty($rrules['BYMONTHDAY']) || !empty($rrules['BYWEEKNO'])) {
+                                $matchingDays = array_filter(
+                                    $this->getDaysOfYearMatchingByDayRRule($rrules['BYDAY'], $frequencyRecurringDateTime),
+                                    function ($yearDay) use ($matchingDays) {
+                                        return in_array($yearDay, $matchingDays);
+                                    }
+                                );
+                            } elseif (count($matchingDays) === 0) {
+                                $matchingDays = $this->getDaysOfYearMatchingByDayRRule($rrules['BYDAY'], $frequencyRecurringDateTime);
+                            }
+                        }
+
+                        if (count($matchingDays) === 0) {
+                            $matchingDays = array($frequencyRecurringDateTime->format('z') + 1);
+                        } else {
+                            sort($matchingDays);
+                        }
+
+                        if (!empty($rrules['BYSETPOS'])) {
+                            $matchingDays = $this->filterValuesUsingBySetPosRRule($rrules['BYSETPOS'], $matchingDays);
+                        }
+
+                        foreach ($matchingDays as $day) {
+                            $clonedDateTime = clone $frequencyRecurringDateTime;
+                            $candidateDateTimes[] = $clonedDateTime->setDate(
+                                $frequencyRecurringDateTime->format('Y'),
+                                1,
+                                $day
+                            );
+                        }
                         break;
                 }
 
@@ -1529,7 +1593,16 @@ class ICal
                         $frequencyRecurringDateTime->modify('-1 month');
                     }
                 }
+
+                // $monthDays is set in the DAILY frequency if the BYMONTHDAY stanza is present in
+                // the RRULE. The variable only needs to be updated when we change months, so we
+                // unset it here, prompting a recreation next iteration.
+                if (isset($monthDays) && $frequencyRecurringDateTime->format('m') !== $monthPreMove) {
+                    unset($monthDays);
+                }
             }
+
+            unset($monthDays); // Unset it here as well, so it doesn't bleed into the calculation of the next recurring event.
 
             // Determine event length
             $eventLength = 0;
@@ -1583,15 +1656,38 @@ class ICal
         }
 
         // Nullify the initial events that are also EXDATEs
-        if (!empty($eventKeysToRemove)) {
-            foreach ($eventKeysToRemove as $eventKeyToRemove) {
-                $events[$eventKeyToRemove] = null;
-            }
+        foreach ($eventKeysToRemove as $eventKeyToRemove) {
+            $events[$eventKeyToRemove] = null;
         }
 
         $events = array_merge($events, $allEventRecurrences);
 
         $this->cal['VEVENT'] = $events;
+    }
+
+    /**
+     * Resolves values from indices of the range 1 -> $limit.
+     *
+     * For instance, if passed [1, 4, -16] and 28, this will return [1, 4, 13].
+     *
+     * @param  array   $indexes
+     * @param  integer $limit
+     * @return array
+     */
+    protected function resolveIndicesOfRange(array $indexes, $limit)
+    {
+        $matching = array();
+        foreach ($indexes as $index) {
+            if ($index > 0 && $index <= $limit) {
+                $matching[] = $index;
+            } elseif ($index < 0 && -$index <= $limit) {
+                $matching[] = $index + $limit + 1;
+            }
+        }
+
+        sort($matching);
+
+        return $matching;
     }
 
     /**
@@ -1619,7 +1715,7 @@ class ICal
      * @param  \DateTime $initialDateTime
      * @return array
      */
-    protected function getDaysOfMonthMatchingByDayRRule($byDays, $initialDateTime)
+    protected function getDaysOfMonthMatchingByDayRRule(array $byDays, $initialDateTime)
     {
         $matchingDays = array();
 
@@ -1631,10 +1727,11 @@ class ICal
             // Quantise the date to the first instance of the requested day in a month
             // (Or last if we have a -ve {ordwk})
             $bydayDateTime->modify(
-                (($ordwk < 0) ? 'Last' : 'First')
-                . ' '
-                . $this->weekdays[substr($weekday, -2)]  // e.g. "Monday"
-                . ' of ' . $initialDateTime->format('F') // e.g. "June"
+                (($ordwk < 0) ? 'Last' : 'First') .
+                ' ' .
+                $this->weekdays[substr($weekday, -2)] . // e.g. "Monday"
+                ' of ' .
+                $initialDateTime->format('F') // e.g. "June"
             );
 
             if ($ordwk < 0) { // -ve {ordwk}
@@ -1651,8 +1748,204 @@ class ICal
             }
         }
 
-        // Sort into ascending order.
+        // Sort into ascending order
         sort($matchingDays);
+
+        return $matchingDays;
+    }
+
+    /**
+     * Find all days of a month that match the BYMONTHDAY stanza of an RRULE.
+     *
+     * RRUle Syntax:
+     *   BYMONTHDAY={bymodaylist}
+     *
+     * Where:
+     *   bymodaylist = {monthdaynum}[,{monthdaynum}...]
+     *   monthdaynum = ([+] || -) {ordmoday}
+     *   ordmoday    = 1 to 31
+     *
+     * @param  array     $byMonthDays
+     * @param  \DateTime $initialDateTime
+     * @return array
+     */
+    protected function getDaysOfMonthMatchingByMonthDayRRule(array $byMonthDays, $initialDateTime)
+    {
+        return $this->resolveIndicesOfRange($byMonthDays, $initialDateTime->format('t'));
+    }
+
+    /**
+     * Find all days of a year that match the BYDAY stanza of an RRULE.
+     *
+     * With no {ordwk}, then return the day number of every {weekday}
+     * within the year.
+     *
+     * With a +ve {ordwk}, then return the {ordwk} {weekday} within the
+     * year.
+     *
+     * With a -ve {ordwk}, then return the {ordwk}-to-last {weekday}
+     * within the year.
+     *
+     * RRule Syntax:
+     *   BYDAY={bywdaylist}
+     *
+     * Where:
+     *   bywdaylist = {weekdaynum}[,{weekdaynum}...]
+     *   weekdaynum = [[+]{ordwk} || -{ordwk}]{weekday}
+     *   ordwk      = 1 to 53
+     *   weekday    = SU || MO || TU || WE || TH || FR || SA
+     *
+     * @param  array     $byDays
+     * @param  \DateTime $initialDateTime
+     * @return array
+     */
+    protected function getDaysOfYearMatchingByDayRRule(array $byDays, $initialDateTime)
+    {
+        $matchingDays = array();
+
+        foreach ($byDays as $weekday) {
+            $bydayDateTime = clone $initialDateTime;
+
+            $ordwk = intval(substr($weekday, 0, -2));
+
+            // Quantise the date to the first instance of the requested day in a year
+            // (Or last if we have a -ve {ordwk})
+            $bydayDateTime->modify(
+                (($ordwk < 0) ? 'Last' : 'First') .
+                ' ' .
+                $this->weekdays[substr($weekday, -2)] . // e.g. "Monday"
+                ' of ' . (($ordwk < 0) ? 'December' : 'January') .
+                ' ' . $initialDateTime->format('Y') // e.g. "2018"
+            );
+
+            if ($ordwk < 0) { // -ve {ordwk}
+                $bydayDateTime->modify((++$ordwk) . ' week');
+                $matchingDays[] = $bydayDateTime->format('z') + 1;
+            } elseif ($ordwk > 0) { // +ve {ordwk}
+                $bydayDateTime->modify((--$ordwk) . ' week');
+                $matchingDays[] = $bydayDateTime->format('z') + 1;
+            } else { // No {ordwk}
+                while ($bydayDateTime->format('Y') === $initialDateTime->format('Y')) {
+                    $matchingDays[] = $bydayDateTime->format('z') + 1;
+                    $bydayDateTime->modify('+1 week');
+                }
+            }
+        }
+
+        // Sort into ascending order
+        sort($matchingDays);
+
+        return $matchingDays;
+    }
+
+    /**
+     * Find all days of a year that match the BYYEARDAY stanza of an RRULE.
+     *
+     * RRUle Syntax:
+     *   BYYEARDAY={byyrdaylist}
+     *
+     * Where:
+     *   byyrdaylist = {yeardaynum}[,{yeardaynum}...]
+     *   yeardaynum  = ([+] || -) {ordyrday}
+     *   ordyrday    = 1 to 366
+     *
+     * @param  array     $byYearDays
+     * @param  \DateTime $initialDateTime
+     * @return array
+     */
+    protected function getDaysOfYearMatchingByYearDayRRule(array $byYearDays, $initialDateTime)
+    {
+        // `\DateTime::format('L')` returns 1 if leap year, 0 if not.
+        $daysInThisYear = $initialDateTime->format('L') ? 366 : 365;
+
+        return $this->resolveIndicesOfRange($byYearDays, $daysInThisYear);
+    }
+
+    /**
+     * Find all days of a year that match the BYWEEKNO stanza of an RRULE.
+     *
+     * Unfortunately, the RFC5545 specification does not specify exactly
+     * how BYWEEKNO should expand on the initial DTSTART when provided
+     * without any other stanzas.
+     *
+     * A comparison of expansions used by other ics parsers may be found
+     * at https://github.com/s0600204/ics-parser-1/wiki/byweekno
+     *
+     * This method uses the same expansion as the python-dateutil module.
+     *
+     * RRUle Syntax:
+     *   BYWEEKNO={bywknolist}
+     *
+     * Where:
+     *   bywknolist = {weeknum}[,{weeknum}...]
+     *   weeknum    = ([+] || -) {ordwk}
+     *   ordwk      = 1 to 53
+     *
+     * @param  array     $byWeekNums
+     * @param  \DateTime $initialDateTime
+     * @return array
+     */
+    protected function getDaysOfYearMatchingByWeekNoRRule(array $byWeekNums, $initialDateTime)
+    {
+        // `\DateTime::format('L')` returns 1 if leap year, 0 if not.
+        $isLeapYear = $initialDateTime->format('L');
+        $firstDayOfTheYear = date_create("first day of January {$initialDateTime->format('Y')}")->format('D');
+        $weeksInThisYear = ($firstDayOfTheYear === 'Thu' || $isLeapYear && $firstDayOfTheYear === 'Wed') ? 53 : 52;
+
+        $matchingWeeks = $this->resolveIndicesOfRange($byWeekNums, $weeksInThisYear);
+        $matchingDays = array();
+        $byweekDateTime = clone $initialDateTime;
+        foreach ($matchingWeeks as $weekNum) {
+            $dayNum = $byweekDateTime->setISODate(
+                $initialDateTime->format('Y'),
+                $weekNum,
+                1
+            )->format('z') + 1;
+            for ($x = 0; $x < 7; ++$x) {
+                $matchingDays[] = $x + $dayNum;
+            }
+        }
+
+        sort($matchingDays);
+
+        return $matchingDays;
+    }
+
+    /**
+     * Find all days of a year that match the BYMONTHDAY stanza of an RRULE.
+     *
+     * RRule Syntax:
+     *   BYMONTHDAY={bymodaylist}
+     *
+     * Where:
+     *   bymodaylist = {monthdaynum}[,{monthdaynum}...]
+     *   monthdaynum = ([+] || -) {ordmoday}
+     *   ordmoday    = 1 to 31
+     *
+     * @param  array     $byMonthDays
+     * @param  \DateTime $initialDateTime
+     * @return array
+     */
+    protected function getDaysOfYearMatchingByMonthDayRRule(array $byMonthDays, $initialDateTime)
+    {
+        $matchingDays = array();
+        $monthDateTime = clone $initialDateTime;
+        for ($month = 1; $month < 13; $month++) {
+            $monthDateTime->setDate(
+                $initialDateTime->format('Y'),
+                $month,
+                1
+            );
+
+            $monthDays = $this->getDaysOfMonthMatchingByMonthDayRRule($byMonthDays, $monthDateTime);
+            foreach ($monthDays as $day) {
+                $matchingDays[] = $monthDateTime->setDate(
+                    $initialDateTime->format('Y'),
+                    $monthDateTime->format('m'),
+                    $day
+                )->format('z') + 1;
+            }
+        }
 
         return $matchingDays;
     }
@@ -1679,7 +1972,7 @@ class ICal
      * @param  array $valuesList
      * @return array
      */
-    protected function filterValuesUsingBySetPosRRule($bySetPos, $valuesList)
+    protected function filterValuesUsingBySetPosRRule(array $bySetPos, array $valuesList)
     {
         $filteredMatches = array();
 
@@ -1744,8 +2037,9 @@ class ICal
      */
     public function events()
     {
-        $array  = $this->cal;
-        $array  = isset($array['VEVENT']) ? $array['VEVENT'] : array();
+        $array = $this->cal;
+        $array = isset($array['VEVENT']) ? $array['VEVENT'] : array();
+
         $events = array();
 
         if (!empty($array)) {
@@ -1865,7 +2159,7 @@ class ICal
         if (!is_null($rangeStart)) {
             try {
                 $rangeStart = new \DateTime($rangeStart, new \DateTimeZone($this->defaultTimeZone));
-            } catch (\Exception $e) {
+            } catch (\Exception $exception) {
                 error_log("ICal::eventsFromRange: Invalid date passed ({$rangeStart})");
                 $rangeStart = false;
             }
@@ -1876,7 +2170,7 @@ class ICal
         if (!is_null($rangeEnd)) {
             try {
                 $rangeEnd = new \DateTime($rangeEnd, new \DateTimeZone($this->defaultTimeZone));
-            } catch (\Exception $e) {
+            } catch (\Exception $exception) {
                 error_log("ICal::eventsFromRange: Invalid date passed ({$rangeEnd})");
                 $rangeEnd = false;
             }
@@ -2204,27 +2498,27 @@ class ICal
         }
 
         $output          = array();
-        $currentTimeZone = $this->defaultTimeZone;
+        $currentTimeZone = new \DateTimeZone($this->defaultTimeZone);
 
         foreach ($exdates as $subArray) {
             end($subArray);
             $finalKey = key($subArray);
 
-            foreach ($subArray as $key => $value) {
+            foreach (array_keys($subArray) as $key) {
                 if ($key === 'TZID') {
                     $currentTimeZone = $this->timeZoneStringToDateTimeZone($subArray[$key]);
                 } elseif (is_numeric($key)) {
                     $icalDate = $subArray[$key];
 
                     if (substr($icalDate, -1) === 'Z') {
-                        $currentTimeZone = self::TIME_ZONE_UTC;
+                        $currentTimeZone = new \DateTimeZone(self::TIME_ZONE_UTC);
                     }
 
-                    $output[] = new Carbon($icalDate, $currentTimeZone);
+                    $output[] = new \DateTime($icalDate, $currentTimeZone);
 
                     if ($key === $finalKey) {
                         // Reset to default
-                        $currentTimeZone = $this->defaultTimeZone;
+                        $currentTimeZone = new \DateTimeZone($this->defaultTimeZone);
                     }
                 }
             }
@@ -2250,7 +2544,7 @@ class ICal
             new \DateTime($value);
 
             return true;
-        } catch (\Exception $e) {
+        } catch (\Exception $exception) {
             return false;
         }
     }

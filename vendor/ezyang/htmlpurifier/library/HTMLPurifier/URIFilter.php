@@ -1,5 +1,5 @@
 <?php
-#[AllowDynamicProperties]
+
 /**
  * Chainable filters for custom URI processing.
  *

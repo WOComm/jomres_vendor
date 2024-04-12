@@ -1,5 +1,5 @@
 <?php
-#[AllowDynamicProperties]
+
 /**
  * Represents a measurable length, with a string numeric magnitude
  * and a unit. This object is immutable.
@@ -78,7 +78,7 @@ class HTMLPurifier_Length
         if ($this->n === '0' && $this->unit === false) {
             return true;
         }
-        if (!ctype_lower($this->unit)) {
+        if ($this->unit === false || !ctype_lower($this->unit)) {
             $this->unit = strtolower($this->unit);
         }
         if (!isset(HTMLPurifier_Length::$allowedUnits[$this->unit])) {

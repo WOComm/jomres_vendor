@@ -1,5 +1,5 @@
 <?php
-#[AllowDynamicProperties]
+
 /**
  * Validates contents based on NMTOKENS attribute type.
  */

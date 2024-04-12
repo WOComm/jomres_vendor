@@ -1,5 +1,5 @@
 <?php
-#[AllowDynamicProperties]
+
 /**
  * This is in almost every respect equivalent to an array except
  * that it keeps track of which keys were accessed.
@@ -20,6 +20,7 @@ class HTMLPurifier_StringHash extends ArrayObject
      * @param mixed $index
      * @return mixed
      */
+    #[\ReturnTypeWillChange]
     public function offsetGet($index)
     {
         $this->accessed[$index] = true;

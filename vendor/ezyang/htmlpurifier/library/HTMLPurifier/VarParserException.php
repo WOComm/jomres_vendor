@@ -1,5 +1,5 @@
 <?php
-#[AllowDynamicProperties]
+
 /**
  * Exception type for HTMLPurifier_VarParser
  */

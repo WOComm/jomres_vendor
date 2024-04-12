@@ -1,5 +1,5 @@
 <?php
-#[AllowDynamicProperties]
+
 /**
  * Implements special behavior for class attribute (normally NMTOKENS)
  */

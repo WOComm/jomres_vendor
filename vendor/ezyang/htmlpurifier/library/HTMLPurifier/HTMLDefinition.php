@@ -1,5 +1,5 @@
 <?php
-#[AllowDynamicProperties]
+
 /**
  * Definition of the purified HTML that describes allowed children,
  * attributes, and many other things.

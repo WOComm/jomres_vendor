@@ -1,5 +1,5 @@
 <?php
-#[AllowDynamicProperties]
+
 /**
  * Definition for tables.  The general idea is to extract out all of the
  * essential bits, and then reconstruct it later.
@@ -164,7 +164,7 @@ class HTMLPurifier_ChildDef_Table extends HTMLPurifier_ChildDef
             }
         }
 
-        if (empty($content)) {
+        if (empty($content) && $thead === false && $tfoot === false) {
             return false;
         }
 

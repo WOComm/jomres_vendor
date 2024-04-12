@@ -4,37 +4,38 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitb0a91641d819b9a69ad43de9ca71dea8
+class ComposerStaticInit4412d7f8f6649d635afadef43066c249
 {
     public static $files = array (
-        '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         '7b11c4dc42b3b3023073cb14e519683c' => __DIR__ . '/..' . '/ralouphie/getallheaders/src/getallheaders.php',
         'c964ee0ededf28c96ebd9db5099ef910' => __DIR__ . '/..' . '/guzzlehttp/promises/src/functions_include.php',
         'a0edc8309cc5e1d60e3047b5df6b7052' => __DIR__ . '/..' . '/guzzlehttp/psr7/src/functions_include.php',
+        'e69f7f6ee287b969198c3c9d6777bd38' => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer/bootstrap.php',
         '25072dd6e2470089de65ae7bf11d3109' => __DIR__ . '/..' . '/symfony/polyfill-php72/bootstrap.php',
         'f598d06aa772fa33d905e87be6398fb1' => __DIR__ . '/..' . '/symfony/polyfill-intl-idn/bootstrap.php',
+        '0e6d7bf4a5811bfa5cf40c5ccd6fae6a' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/bootstrap.php',
         '37a3dc5111fe8f707ab4c132ef1dbc62' => __DIR__ . '/..' . '/guzzlehttp/guzzle/src/functions_include.php',
         'b067bc7112e384b61c701452d53a14a8' => __DIR__ . '/..' . '/mtdowling/jmespath.php/src/JmesPath.php',
-        'a4a119a56e50fbb293281d9a48007e0e' => __DIR__ . '/..' . '/symfony/polyfill-php80/bootstrap.php',
         '8a9dc1de0ca7e01f3e08231539562f61' => __DIR__ . '/..' . '/aws/aws-sdk-php/src/functions.php',
+        'b45b351e6b6f7487d819961fef2fda77' => __DIR__ . '/..' . '/jakeasmith/http_build_url/src/http_build_url.php',
         '6124b4c8570aa390c21fafd04a26c69f' => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy/deep_copy.php',
         '2cffec82183ee1cea088009cef9a6fc3' => __DIR__ . '/..' . '/ezyang/htmlpurifier/library/HTMLPurifier.composer.php',
-        'b45b351e6b6f7487d819961fef2fda77' => __DIR__ . '/..' . '/jakeasmith/http_build_url/src/http_build_url.php',
         'fc73bab8d04e21bcdda37ca319c63800' => __DIR__ . '/..' . '/mikecao/flight/flight/autoload.php',
         '5b7d984aab5ae919d3362ad9588977eb' => __DIR__ . '/..' . '/mikecao/flight/flight/Flight.php',
+        'db356362850385d08a5381de2638b5fd' => __DIR__ . '/..' . '/mpdf/mpdf/src/functions.php',
     );
 
     public static $prefixLengthsPsr4 = array (
+        's' => 
+        array (
+            'setasign\\Fpdi\\' => 14,
+        ),
         'S' => 
         array (
-            'Symfony\\Polyfill\\Php80\\' => 23,
             'Symfony\\Polyfill\\Php72\\' => 23,
             'Symfony\\Polyfill\\Mbstring\\' => 26,
+            'Symfony\\Polyfill\\Intl\\Normalizer\\' => 33,
             'Symfony\\Polyfill\\Intl\\Idn\\' => 26,
-            'Symfony\\Contracts\\Translation\\' => 30,
-            'Symfony\\Component\\Translation\\' => 30,
-            'Symfony\\Component\\Process\\' => 26,
-            'Symfony\\Component\\OptionsResolver\\' => 34,
             'Stripe\\' => 7,
         ),
         'R' => 
@@ -49,12 +50,14 @@ class ComposerStaticInitb0a91641d819b9a69ad43de9ca71dea8
         ),
         'M' => 
         array (
-            'Mso\\IdnaConvert\\' => 16,
+            'Mpdf\\PsrLogAwareTrait\\' => 22,
+            'Mpdf\\PsrHttpMessageShim\\' => 24,
             'Mpdf\\' => 5,
             'Monolog\\' => 8,
         ),
         'L' => 
         array (
+            'League\\MimeTypeDetection\\' => 25,
             'League\\Flysystem\\AwsS3v3\\' => 25,
             'League\\Flysystem\\' => 17,
         ),
@@ -72,20 +75,17 @@ class ComposerStaticInitb0a91641d819b9a69ad43de9ca71dea8
         array (
             'DeepCopy\\' => 9,
         ),
-        'C' => 
-        array (
-            'Carbon\\' => 7,
-        ),
         'A' => 
         array (
             'Aws\\' => 4,
+            'Algo26\\IdnaConvert\\' => 19,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'Symfony\\Polyfill\\Php80\\' => 
+        'setasign\\Fpdi\\' => 
         array (
-            0 => __DIR__ . '/..' . '/symfony/polyfill-php80',
+            0 => __DIR__ . '/..' . '/setasign/fpdi/src',
         ),
         'Symfony\\Polyfill\\Php72\\' => 
         array (
@@ -95,25 +95,13 @@ class ComposerStaticInitb0a91641d819b9a69ad43de9ca71dea8
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-mbstring',
         ),
+        'Symfony\\Polyfill\\Intl\\Normalizer\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer',
+        ),
         'Symfony\\Polyfill\\Intl\\Idn\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-intl-idn',
-        ),
-        'Symfony\\Contracts\\Translation\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/symfony/translation-contracts',
-        ),
-        'Symfony\\Component\\Translation\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/symfony/translation',
-        ),
-        'Symfony\\Component\\Process\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/symfony/process',
-        ),
-        'Symfony\\Component\\OptionsResolver\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/symfony/options-resolver',
         ),
         'Stripe\\' => 
         array (
@@ -125,7 +113,7 @@ class ComposerStaticInitb0a91641d819b9a69ad43de9ca71dea8
         ),
         'Psr\\Log\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
+            0 => __DIR__ . '/..' . '/psr/log/src',
         ),
         'Psr\\Http\\Message\\' => 
         array (
@@ -135,9 +123,13 @@ class ComposerStaticInitb0a91641d819b9a69ad43de9ca71dea8
         array (
             0 => __DIR__ . '/..' . '/phpmailer/phpmailer/src',
         ),
-        'Mso\\IdnaConvert\\' => 
+        'Mpdf\\PsrLogAwareTrait\\' => 
         array (
-            0 => __DIR__ . '/..' . '/mso/idna-convert/src',
+            0 => __DIR__ . '/..' . '/mpdf/psr-log-aware-trait/src',
+        ),
+        'Mpdf\\PsrHttpMessageShim\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/mpdf/psr-http-message-shim/src',
         ),
         'Mpdf\\' => 
         array (
@@ -146,6 +138,10 @@ class ComposerStaticInitb0a91641d819b9a69ad43de9ca71dea8
         'Monolog\\' => 
         array (
             0 => __DIR__ . '/..' . '/monolog/monolog/src/Monolog',
+        ),
+        'League\\MimeTypeDetection\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/league/mime-type-detection/src',
         ),
         'League\\Flysystem\\AwsS3v3\\' => 
         array (
@@ -175,13 +171,13 @@ class ComposerStaticInitb0a91641d819b9a69ad43de9ca71dea8
         array (
             0 => __DIR__ . '/..' . '/myclabs/deep-copy/src/DeepCopy',
         ),
-        'Carbon\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon',
-        ),
         'Aws\\' => 
         array (
             0 => __DIR__ . '/..' . '/aws/aws-sdk-php/src',
+        ),
+        'Algo26\\IdnaConvert\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/algo26-matthias/idna-convert/src',
         ),
     );
 
@@ -199,10 +195,6 @@ class ComposerStaticInitb0a91641d819b9a69ad43de9ca71dea8
         ),
         'I' => 
         array (
-            'ImageOptimizer' => 
-            array (
-                0 => __DIR__ . '/..' . '/ps/image-optimizer/src',
-            ),
             'ICal' => 
             array (
                 0 => __DIR__ . '/..' . '/johngrogg/ics-parser/src',
@@ -218,15 +210,32 @@ class ComposerStaticInitb0a91641d819b9a69ad43de9ca71dea8
     );
 
     public static $classMap = array (
-        'FPDF_TPL' => __DIR__ . '/..' . '/setasign/fpdi/fpdf_tpl.php',
-        'FPDI' => __DIR__ . '/..' . '/setasign/fpdi/fpdi.php',
-        'FilterASCII85' => __DIR__ . '/..' . '/setasign/fpdi/filters/FilterASCII85.php',
-        'FilterASCIIHexDecode' => __DIR__ . '/..' . '/setasign/fpdi/filters/FilterASCIIHexDecode.php',
-        'FilterLZW' => __DIR__ . '/..' . '/setasign/fpdi/filters/FilterLZW.php',
-        'Stringable' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Stringable.php',
-        'ValueError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/ValueError.php',
+        'AWS\\CRT\\Auth\\AwsCredentials' => __DIR__ . '/..' . '/aws/aws-crt-php/src/AWS/CRT/Auth/AwsCredentials.php',
+        'AWS\\CRT\\Auth\\CredentialsProvider' => __DIR__ . '/..' . '/aws/aws-crt-php/src/AWS/CRT/Auth/CredentialsProvider.php',
+        'AWS\\CRT\\Auth\\Signable' => __DIR__ . '/..' . '/aws/aws-crt-php/src/AWS/CRT/Auth/Signable.php',
+        'AWS\\CRT\\Auth\\SignatureType' => __DIR__ . '/..' . '/aws/aws-crt-php/src/AWS/CRT/Auth/SignatureType.php',
+        'AWS\\CRT\\Auth\\SignedBodyHeaderType' => __DIR__ . '/..' . '/aws/aws-crt-php/src/AWS/CRT/Auth/SignedBodyHeaderType.php',
+        'AWS\\CRT\\Auth\\Signing' => __DIR__ . '/..' . '/aws/aws-crt-php/src/AWS/CRT/Auth/Signing.php',
+        'AWS\\CRT\\Auth\\SigningAlgorithm' => __DIR__ . '/..' . '/aws/aws-crt-php/src/AWS/CRT/Auth/SigningAlgorithm.php',
+        'AWS\\CRT\\Auth\\SigningConfigAWS' => __DIR__ . '/..' . '/aws/aws-crt-php/src/AWS/CRT/Auth/SigningConfigAWS.php',
+        'AWS\\CRT\\Auth\\SigningResult' => __DIR__ . '/..' . '/aws/aws-crt-php/src/AWS/CRT/Auth/SigningResult.php',
+        'AWS\\CRT\\Auth\\StaticCredentialsProvider' => __DIR__ . '/..' . '/aws/aws-crt-php/src/AWS/CRT/Auth/StaticCredentialsProvider.php',
+        'AWS\\CRT\\CRT' => __DIR__ . '/..' . '/aws/aws-crt-php/src/AWS/CRT/CRT.php',
+        'AWS\\CRT\\HTTP\\Headers' => __DIR__ . '/..' . '/aws/aws-crt-php/src/AWS/CRT/HTTP/Headers.php',
+        'AWS\\CRT\\HTTP\\Message' => __DIR__ . '/..' . '/aws/aws-crt-php/src/AWS/CRT/HTTP/Message.php',
+        'AWS\\CRT\\HTTP\\Request' => __DIR__ . '/..' . '/aws/aws-crt-php/src/AWS/CRT/HTTP/Request.php',
+        'AWS\\CRT\\HTTP\\Response' => __DIR__ . '/..' . '/aws/aws-crt-php/src/AWS/CRT/HTTP/Response.php',
+        'AWS\\CRT\\IO\\EventLoopGroup' => __DIR__ . '/..' . '/aws/aws-crt-php/src/AWS/CRT/IO/EventLoopGroup.php',
+        'AWS\\CRT\\IO\\InputStream' => __DIR__ . '/..' . '/aws/aws-crt-php/src/AWS/CRT/IO/InputStream.php',
+        'AWS\\CRT\\Internal\\Encoding' => __DIR__ . '/..' . '/aws/aws-crt-php/src/AWS/CRT/Internal/Encoding.php',
+        'AWS\\CRT\\Internal\\Extension' => __DIR__ . '/..' . '/aws/aws-crt-php/src/AWS/CRT/Internal/Extension.php',
+        'AWS\\CRT\\Log' => __DIR__ . '/..' . '/aws/aws-crt-php/src/AWS/CRT/Log.php',
+        'AWS\\CRT\\NativeResource' => __DIR__ . '/..' . '/aws/aws-crt-php/src/AWS/CRT/NativeResource.php',
+        'AWS\\CRT\\OptionValue' => __DIR__ . '/..' . '/aws/aws-crt-php/src/AWS/CRT/Options.php',
+        'AWS\\CRT\\Options' => __DIR__ . '/..' . '/aws/aws-crt-php/src/AWS/CRT/Options.php',
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+        'Normalizer' => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer/Resources/stubs/Normalizer.php',
         'XMLSchema' => __DIR__ . '/..' . '/fergusean/nusoap/lib/class.xmlschema.php',
-        'fpdi_pdf_parser' => __DIR__ . '/..' . '/setasign/fpdi/fpdi_pdf_parser.php',
         'nusoap_base' => __DIR__ . '/..' . '/fergusean/nusoap/lib/class.nusoap_base.php',
         'nusoap_client' => __DIR__ . '/..' . '/fergusean/nusoap/lib/class.soapclient.php',
         'nusoap_client_mime' => __DIR__ . '/..' . '/fergusean/nusoap/lib/nusoapmime.php',
@@ -237,7 +246,6 @@ class ComposerStaticInitb0a91641d819b9a69ad43de9ca71dea8
         'nusoap_wsdlcache' => __DIR__ . '/..' . '/fergusean/nusoap/lib/class.wsdlcache.php',
         'nusoap_xmlschema' => __DIR__ . '/..' . '/fergusean/nusoap/lib/class.xmlschema.php',
         'nusoapservermime' => __DIR__ . '/..' . '/fergusean/nusoap/lib/nusoapmime.php',
-        'pdf_context' => __DIR__ . '/..' . '/setasign/fpdi/pdf_context.php',
         'soap_fault' => __DIR__ . '/..' . '/fergusean/nusoap/lib/class.soap_fault.php',
         'soap_parser' => __DIR__ . '/..' . '/fergusean/nusoap/lib/class.soap_parser.php',
         'soap_server' => __DIR__ . '/..' . '/fergusean/nusoap/lib/class.soap_server.php',
@@ -252,10 +260,10 @@ class ComposerStaticInitb0a91641d819b9a69ad43de9ca71dea8
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitb0a91641d819b9a69ad43de9ca71dea8::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitb0a91641d819b9a69ad43de9ca71dea8::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInitb0a91641d819b9a69ad43de9ca71dea8::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInitb0a91641d819b9a69ad43de9ca71dea8::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit4412d7f8f6649d635afadef43066c249::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit4412d7f8f6649d635afadef43066c249::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit4412d7f8f6649d635afadef43066c249::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit4412d7f8f6649d635afadef43066c249::$classMap;
 
         }, null, ClassLoader::class);
     }

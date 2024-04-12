@@ -1,5 +1,5 @@
 <?php
-#[AllowDynamicProperties]
+
 /**
  * Validates an IPv6 address.
  * @author Feyd @ forums.devnetwork.net (public domain)

@@ -1,5 +1,5 @@
 <?php
-#[AllowDynamicProperties]
+
 /**
  * Supertype for classes that define a strategy for modifying/purifying tokens.
  *

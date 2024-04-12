@@ -1,5 +1,5 @@
 <?php
-#[AllowDynamicProperties]
+
 /**
  * Takes the contents of blockquote when in strict and reformats for validation.
  */

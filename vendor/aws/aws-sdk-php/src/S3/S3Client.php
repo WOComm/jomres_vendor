@@ -8,20 +8,22 @@ use Aws\AwsClient;
 use Aws\CacheInterface;
 use Aws\ClientResolver;
 use Aws\Command;
+use Aws\CommandInterface;
+use Aws\Configuration\ConfigurationResolver;
 use Aws\Exception\AwsException;
 use Aws\HandlerList;
+use Aws\Identity\S3\S3ExpressIdentityProvider;
+use Aws\InputValidationMiddleware;
 use Aws\Middleware;
+use Aws\ResultInterface;
 use Aws\Retry\QuotaManager;
 use Aws\RetryMiddleware;
-use Aws\ResultInterface;
-use Aws\CommandInterface;
 use Aws\RetryMiddlewareV2;
+use Aws\S3\RegionalEndpoint\ConfigurationProvider;
 use Aws\S3\UseArnRegion\Configuration;
 use Aws\S3\UseArnRegion\ConfigurationInterface;
 use Aws\S3\UseArnRegion\ConfigurationProvider as UseArnRegionConfigurationProvider;
-use Aws\S3\RegionalEndpoint\ConfigurationProvider;
 use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Promise\Promise;
 use GuzzleHttp\Promise\PromiseInterface;
 use Psr\Http\Message\RequestInterface;
 
@@ -38,6 +40,8 @@ use Psr\Http\Message\RequestInterface;
  * @method \GuzzleHttp\Promise\Promise createBucketAsync(array $args = [])
  * @method \Aws\Result createMultipartUpload(array $args = [])
  * @method \GuzzleHttp\Promise\Promise createMultipartUploadAsync(array $args = [])
+ * @method \Aws\Result createSession(array $args = [])
+ * @method \GuzzleHttp\Promise\Promise createSessionAsync(array $args = [])
  * @method \Aws\Result deleteBucket(array $args = [])
  * @method \GuzzleHttp\Promise\Promise deleteBucketAsync(array $args = [])
  * @method \Aws\Result deleteBucketAnalyticsConfiguration(array $args = [])
@@ -46,12 +50,16 @@ use Psr\Http\Message\RequestInterface;
  * @method \GuzzleHttp\Promise\Promise deleteBucketCorsAsync(array $args = [])
  * @method \Aws\Result deleteBucketEncryption(array $args = [])
  * @method \GuzzleHttp\Promise\Promise deleteBucketEncryptionAsync(array $args = [])
+ * @method \Aws\Result deleteBucketIntelligentTieringConfiguration(array $args = [])
+ * @method \GuzzleHttp\Promise\Promise deleteBucketIntelligentTieringConfigurationAsync(array $args = [])
  * @method \Aws\Result deleteBucketInventoryConfiguration(array $args = [])
  * @method \GuzzleHttp\Promise\Promise deleteBucketInventoryConfigurationAsync(array $args = [])
  * @method \Aws\Result deleteBucketLifecycle(array $args = [])
  * @method \GuzzleHttp\Promise\Promise deleteBucketLifecycleAsync(array $args = [])
  * @method \Aws\Result deleteBucketMetricsConfiguration(array $args = [])
  * @method \GuzzleHttp\Promise\Promise deleteBucketMetricsConfigurationAsync(array $args = [])
+ * @method \Aws\Result deleteBucketOwnershipControls(array $args = [])
+ * @method \GuzzleHttp\Promise\Promise deleteBucketOwnershipControlsAsync(array $args = [])
  * @method \Aws\Result deleteBucketPolicy(array $args = [])
  * @method \GuzzleHttp\Promise\Promise deleteBucketPolicyAsync(array $args = [])
  * @method \Aws\Result deleteBucketReplication(array $args = [])
@@ -78,6 +86,8 @@ use Psr\Http\Message\RequestInterface;
  * @method \GuzzleHttp\Promise\Promise getBucketCorsAsync(array $args = [])
  * @method \Aws\Result getBucketEncryption(array $args = [])
  * @method \GuzzleHttp\Promise\Promise getBucketEncryptionAsync(array $args = [])
+ * @method \Aws\Result getBucketIntelligentTieringConfiguration(array $args = [])
+ * @method \GuzzleHttp\Promise\Promise getBucketIntelligentTieringConfigurationAsync(array $args = [])
  * @method \Aws\Result getBucketInventoryConfiguration(array $args = [])
  * @method \GuzzleHttp\Promise\Promise getBucketInventoryConfigurationAsync(array $args = [])
  * @method \Aws\Result getBucketLifecycle(array $args = [])
@@ -94,6 +104,8 @@ use Psr\Http\Message\RequestInterface;
  * @method \GuzzleHttp\Promise\Promise getBucketNotificationAsync(array $args = [])
  * @method \Aws\Result getBucketNotificationConfiguration(array $args = [])
  * @method \GuzzleHttp\Promise\Promise getBucketNotificationConfigurationAsync(array $args = [])
+ * @method \Aws\Result getBucketOwnershipControls(array $args = [])
+ * @method \GuzzleHttp\Promise\Promise getBucketOwnershipControlsAsync(array $args = [])
  * @method \Aws\Result getBucketPolicy(array $args = [])
  * @method \GuzzleHttp\Promise\Promise getBucketPolicyAsync(array $args = [])
  * @method \Aws\Result getBucketPolicyStatus(array $args = [])
@@ -112,6 +124,8 @@ use Psr\Http\Message\RequestInterface;
  * @method \GuzzleHttp\Promise\Promise getObjectAsync(array $args = [])
  * @method \Aws\Result getObjectAcl(array $args = [])
  * @method \GuzzleHttp\Promise\Promise getObjectAclAsync(array $args = [])
+ * @method \Aws\Result getObjectAttributes(array $args = [])
+ * @method \GuzzleHttp\Promise\Promise getObjectAttributesAsync(array $args = [])
  * @method \Aws\Result getObjectLegalHold(array $args = [])
  * @method \GuzzleHttp\Promise\Promise getObjectLegalHoldAsync(array $args = [])
  * @method \Aws\Result getObjectLockConfiguration(array $args = [])
@@ -130,12 +144,16 @@ use Psr\Http\Message\RequestInterface;
  * @method \GuzzleHttp\Promise\Promise headObjectAsync(array $args = [])
  * @method \Aws\Result listBucketAnalyticsConfigurations(array $args = [])
  * @method \GuzzleHttp\Promise\Promise listBucketAnalyticsConfigurationsAsync(array $args = [])
+ * @method \Aws\Result listBucketIntelligentTieringConfigurations(array $args = [])
+ * @method \GuzzleHttp\Promise\Promise listBucketIntelligentTieringConfigurationsAsync(array $args = [])
  * @method \Aws\Result listBucketInventoryConfigurations(array $args = [])
  * @method \GuzzleHttp\Promise\Promise listBucketInventoryConfigurationsAsync(array $args = [])
  * @method \Aws\Result listBucketMetricsConfigurations(array $args = [])
  * @method \GuzzleHttp\Promise\Promise listBucketMetricsConfigurationsAsync(array $args = [])
  * @method \Aws\Result listBuckets(array $args = [])
  * @method \GuzzleHttp\Promise\Promise listBucketsAsync(array $args = [])
+ * @method \Aws\Result listDirectoryBuckets(array $args = [])
+ * @method \GuzzleHttp\Promise\Promise listDirectoryBucketsAsync(array $args = [])
  * @method \Aws\Result listMultipartUploads(array $args = [])
  * @method \GuzzleHttp\Promise\Promise listMultipartUploadsAsync(array $args = [])
  * @method \Aws\Result listObjectVersions(array $args = [])
@@ -156,6 +174,8 @@ use Psr\Http\Message\RequestInterface;
  * @method \GuzzleHttp\Promise\Promise putBucketCorsAsync(array $args = [])
  * @method \Aws\Result putBucketEncryption(array $args = [])
  * @method \GuzzleHttp\Promise\Promise putBucketEncryptionAsync(array $args = [])
+ * @method \Aws\Result putBucketIntelligentTieringConfiguration(array $args = [])
+ * @method \GuzzleHttp\Promise\Promise putBucketIntelligentTieringConfigurationAsync(array $args = [])
  * @method \Aws\Result putBucketInventoryConfiguration(array $args = [])
  * @method \GuzzleHttp\Promise\Promise putBucketInventoryConfigurationAsync(array $args = [])
  * @method \Aws\Result putBucketLifecycle(array $args = [])
@@ -170,6 +190,8 @@ use Psr\Http\Message\RequestInterface;
  * @method \GuzzleHttp\Promise\Promise putBucketNotificationAsync(array $args = [])
  * @method \Aws\Result putBucketNotificationConfiguration(array $args = [])
  * @method \GuzzleHttp\Promise\Promise putBucketNotificationConfigurationAsync(array $args = [])
+ * @method \Aws\Result putBucketOwnershipControls(array $args = [])
+ * @method \GuzzleHttp\Promise\Promise putBucketOwnershipControlsAsync(array $args = [])
  * @method \Aws\Result putBucketPolicy(array $args = [])
  * @method \GuzzleHttp\Promise\Promise putBucketPolicyAsync(array $args = [])
  * @method \Aws\Result putBucketReplication(array $args = [])
@@ -204,10 +226,15 @@ use Psr\Http\Message\RequestInterface;
  * @method \GuzzleHttp\Promise\Promise uploadPartAsync(array $args = [])
  * @method \Aws\Result uploadPartCopy(array $args = [])
  * @method \GuzzleHttp\Promise\Promise uploadPartCopyAsync(array $args = [])
+ * @method \Aws\Result writeGetObjectResponse(array $args = [])
+ * @method \GuzzleHttp\Promise\Promise writeGetObjectResponseAsync(array $args = [])
  */
 class S3Client extends AwsClient implements S3ClientInterface
 {
     use S3ClientTrait;
+
+    /** @var array */
+    private static $mandatoryAttributes = ['Bucket', 'Key'];
 
     public static function getArguments()
     {
@@ -248,15 +275,6 @@ class S3Client extends AwsClient implements S3ClientInterface
                     . ' be accessed via an Accelerate endpoint.',
                 'default' => false,
             ],
-            'use_dual_stack_endpoint' => [
-                'type' => 'config',
-                'valid' => ['bool'],
-                'doc' => 'Set to true to send requests to an S3 Dual Stack'
-                    . ' endpoint by default, which enables IPv6 Protocol.'
-                    . ' Can be enabled or disabled on individual operations by setting'
-                    . ' \'@use_dual_stack_endpoint\' to true or false.',
-                'default' => false,
-            ],
             'use_path_style_endpoint' => [
                 'type' => 'config',
                 'valid' => ['bool'],
@@ -265,6 +283,33 @@ class S3Client extends AwsClient implements S3ClientInterface
                     . ' Can be enabled or disabled on individual operations by setting'
                     . ' \'@use_path_style_endpoint\' to true or false.',
                 'default' => false,
+            ],
+            'disable_multiregion_access_points' => [
+                'type' => 'config',
+                'valid' => ['bool'],
+                'doc' => 'Set to true to disable the usage of'
+                    . ' multi region access points. These are enabled by default.'
+                    . ' Can be enabled or disabled on individual operations by setting'
+                    . ' \'@disable_multiregion_access_points\' to true or false.',
+                'default' => false,
+            ],
+            'disable_express_session_auth' => [
+                'type' => 'config',
+                'valid' => ['bool'],
+                'doc' => 'Set to true to disable the usage of'
+                    . ' s3 express session authentication. This is enabled by default.',
+                'default' => [__CLASS__, '_default_disable_express_session_auth'],
+            ],
+            's3_express_identity_provider' => [
+                'type'    => 'config',
+                'valid'   => [
+                    'bool',
+                    'callable'
+                ],
+                'doc'     => 'Specifies the provider used to generate identities to sign s3 express requests.  '
+                    . 'Set to `false` to disable s3 express auth, or a callable provider used to create s3 express '
+                    . 'identities or return null.',
+                'default' => [__CLASS__, '_default_s3_express_identity_provider'],
             ],
         ];
     }
@@ -279,7 +324,9 @@ class S3Client extends AwsClient implements S3ClientInterface
      * - bucket_endpoint: (bool) Set to true to send requests to a
      *   hardcoded bucket endpoint rather than create an endpoint as a result
      *   of injecting the bucket into the URL. This option is useful for
-     *   interacting with CNAME endpoints.
+     *   interacting with CNAME endpoints. Note: if you are using version 2.243.0
+     *   and above and do not expect the bucket name to appear in the host, you will
+     *   also need to set `use_path_style_endpoint` to `true`.
      * - calculate_md5: (bool) Set to false to disable calculating an MD5
      *   for all Amazon S3 signed uploads.
      * - s3_us_east_1_regional_endpoint:
@@ -314,16 +361,23 @@ class S3Client extends AwsClient implements S3ClientInterface
      *   Can be enabled or disabled on individual operations by setting
      *   '@use_path_style_endpoint\' to true or false. Note:
      *   you cannot use it together with an accelerate endpoint.
+     * - disable_multiregion_access_points: (bool) Set to true to disable
+     *   sending multi region requests.  They are enabled by default.
+     *   Can be enabled or disabled on individual operations by setting
+     *   '@disable_multiregion_access_points\' to true or false. Note:
+     *   you cannot use it together with an accelerate or dualstack endpoint.
      *
      * @param array $args
      */
     public function __construct(array $args)
     {
-        if (!isset($args['s3_us_east_1_regional_endpoint'])) {
-            $args['s3_us_east_1_regional_endpoint'] = ConfigurationProvider::defaultProvider();
-        } elseif ($args['s3_us_east_1_regional_endpoint'] instanceof CacheInterface) {
+        if (
+            !isset($args['s3_us_east_1_regional_endpoint'])
+            || $args['s3_us_east_1_regional_endpoint'] instanceof CacheInterface
+        ) {
             $args['s3_us_east_1_regional_endpoint'] = ConfigurationProvider::defaultProvider($args);
         }
+        $this->addBuiltIns($args);
         parent::__construct($args);
         $stack = $this->getHandlerList();
         $stack->appendInit(SSECMiddleware::wrap($this->getEndpoint()->getScheme()), 's3.ssec');
@@ -333,18 +387,20 @@ class S3Client extends AwsClient implements S3ClientInterface
             's3.content_type'
         );
 
-        // Use the bucket style middleware when using a "bucket_endpoint" (for cnames)
         if ($this->getConfig('bucket_endpoint')) {
             $stack->appendBuild(BucketEndpointMiddleware::wrap(), 's3.bucket_endpoint');
-        } else {
+        } elseif (!$this->isUseEndpointV2()) {
             $stack->appendBuild(
                 S3EndpointMiddleware::wrap(
                     $this->getRegion(),
                     $this->getConfig('endpoint_provider'),
                     [
-                        'dual_stack' => $this->getConfig('use_dual_stack_endpoint'),
                         'accelerate' => $this->getConfig('use_accelerate_endpoint'),
-                        'path_style' => $this->getConfig('use_path_style_endpoint')
+                        'path_style' => $this->getConfig('use_path_style_endpoint'),
+                        'use_fips_endpoint' => $this->getConfig('use_fips_endpoint'),
+                        'dual_stack' =>
+                            $this->getConfig('use_dual_stack_endpoint')->isUseDualStackEndpoint(),
+
                     ]
                 ),
                 's3.endpoint_middleware'
@@ -357,15 +413,31 @@ class S3Client extends AwsClient implements S3ClientInterface
                 $this->getRegion(),
                 [
                     'use_arn_region' => $this->getConfig('use_arn_region'),
-                    'dual_stack' => $this->getConfig('use_dual_stack_endpoint'),
                     'accelerate' => $this->getConfig('use_accelerate_endpoint'),
                     'path_style' => $this->getConfig('use_path_style_endpoint'),
+                    'dual_stack' =>
+                        $this->getConfig('use_dual_stack_endpoint')->isUseDualStackEndpoint(),
+                    'use_fips_endpoint' => $this->getConfig('use_fips_endpoint'),
+                    'disable_multiregion_access_points' =>
+                        $this->getConfig('disable_multiregion_access_points'),
                     'endpoint' => isset($args['endpoint'])
                         ? $args['endpoint']
                         : null
-                ]
+                ],
+                $this->isUseEndpointV2()
             ),
             's3.bucket_endpoint_arn'
+        );
+        if ($this->getConfig('disable_express_session_auth')) {
+            $stack->prependSign(
+                $this->getDisableExpressSessionAuthMiddleware(),
+                's3.disable_express_session_auth'
+            );
+        }
+
+        $stack->appendValidate(
+            InputValidationMiddleware::wrap($this->getApi(), self::$mandatoryAttributes),
+            'input_validation_middleware'
         );
         $stack->appendSign(PutObjectUrlMiddleware::wrap(), 's3.put_object_url');
         $stack->appendSign(PermanentRedirectMiddleware::wrap(), 's3.permanent_redirect');
@@ -374,6 +446,12 @@ class S3Client extends AwsClient implements S3ClientInterface
         $stack->appendInit($this->getLocationConstraintMiddleware(), 's3.location');
         $stack->appendInit($this->getEncodingTypeMiddleware(), 's3.auto_encode');
         $stack->appendInit($this->getHeadObjectMiddleware(), 's3.head_object');
+        if ($this->isUseEndpointV2()) {
+            $this->processEndpointV2Model();
+            $stack->after('builder',
+                's3.check_empty_path_with_query',
+                $this->getEmptyPathWithQuery());
+        }
     }
 
     /**
@@ -389,6 +467,9 @@ class S3Client extends AwsClient implements S3ClientInterface
      */
     public static function isBucketDnsCompatible($bucket)
     {
+        if (!is_string($bucket)) {
+            return false;
+        }
         $bucketLen = strlen($bucket);
 
         return ($bucketLen >= 3 && $bucketLen <= 63) &&
@@ -420,18 +501,28 @@ class S3Client extends AwsClient implements S3ClientInterface
     {
         $command = clone $command;
         $command->getHandlerList()->remove('signer');
+        $request = \Aws\serialize($command);
+        $signing_name = empty($command->getAuthSchemes())
+            ? $this->getSigningName($request->getUri()->getHost())
+            : $command->getAuthSchemes()['name'];
+        $signature_version = $this->getSignatureVersionFromCommand($command);
 
         /** @var \Aws\Signature\SignatureInterface $signer */
         $signer = call_user_func(
             $this->getSignatureProvider(),
-            $this->getConfig('signature_version'),
-            $this->getConfig('signing_name'),
+            $signature_version,
+            $signing_name,
             $this->getConfig('signing_region')
         );
-
+        if ($signature_version == 'v4-s3express') {
+            $provider = $this->getConfig('s3_express_identity_provider');
+            $credentials = $provider($command)->wait();
+        } else {
+            $credentials = $this->getCredentials()->wait();
+        }
         return $signer->presign(
-            \Aws\serialize($command),
-            $this->getCredentials()->wait(),
+            $request,
+            $credentials,
             $expires,
             $options
         );
@@ -598,6 +689,154 @@ class S3Client extends AwsClient implements S3ClientInterface
         };
     }
 
+    /**
+     * Provides a middleware that checks for an empty path and a
+     * non-empty query string.
+     *
+     * @return \Closure
+     */
+    private function getEmptyPathWithQuery()
+    {
+        return static function (callable $handler) {
+            return function (Command $command, RequestInterface $request) use ($handler) {
+                $uri = $request->getUri();
+                if (empty($uri->getPath()) && !empty($uri->getQuery())) {
+                    $uri = $uri->withPath('/');
+                    $request = $request->withUri($uri);
+                }
+
+                return $handler($command, $request);
+            };
+        };
+    }
+
+    /**
+     * Provides a middleware that disables express session auth when
+     * customers opt out of it.
+     *
+     * @return \Closure
+     */
+    private function getDisableExpressSessionAuthMiddleware()
+    {
+        return function (callable $handler) {
+            return function (
+                CommandInterface $command,
+                RequestInterface $request = null
+            ) use ($handler) {
+                if (!empty($command->getAuthSchemes()['version'] )
+                    && $command->getAuthSchemes()['version'] == 'v4-s3express'
+                ) {
+                    $authScheme = $command->getAuthSchemes();
+                    $authScheme['version'] = 's3v4';
+                    $command->setAuthSchemes($authScheme);
+                }
+                return $handler($command, $request);
+            };
+        };
+    }
+
+    /**
+     * Special handling for when the service name is s3-object-lambda.
+     * So, if the host contains s3-object-lambda, then the service name
+     * returned is s3-object-lambda, otherwise the default signing service is returned.
+     * @param string $host The host to validate if is a s3-object-lambda URL.
+     * @return string returns the signing service name to be used
+     */
+    private function getSigningName($host)
+    {
+        if (strpos( $host, 's3-object-lambda')) {
+            return 's3-object-lambda';
+        }
+
+        return $this->getConfig('signing_name');
+    }
+
+    public static function _default_disable_express_session_auth(array &$args) {
+        return ConfigurationResolver::resolve(
+            's3_disable_express_session_auth',
+            false,
+            'bool',
+            $args
+        );
+    }
+
+    public static function _default_s3_express_identity_provider(array $args)
+    {
+        if ($args['config']['disable_express_session_auth']) {
+            return false;
+        }
+        return new S3ExpressIdentityProvider($args['region']);
+    }
+
+    /**
+     * Modifies API definition to remove `Bucket` from request URIs.
+     * This is now handled by the endpoint ruleset.
+     *
+     * @return void
+     *
+     * @internal
+     */
+    private function processEndpointV2Model()
+    {
+        $definition = $this->getApi()->getDefinition();
+
+        foreach($definition['operations'] as &$operation) {
+            if (isset($operation['http']['requestUri'])) {
+                $requestUri = $operation['http']['requestUri'];
+                if ($requestUri === "/{Bucket}") {
+                    $requestUri = str_replace('/{Bucket}', '/', $requestUri);
+                } else {
+                    $requestUri = str_replace('/{Bucket}', '', $requestUri);
+                }
+                $operation['http']['requestUri'] = $requestUri;
+            }
+        }
+        $this->getApi()->setDefinition($definition);
+    }
+
+    /**
+     * Adds service-specific client built-in values
+     *
+     * @return void
+     */
+    private function addBuiltIns($args)
+    {
+        if (isset($args['region'])
+            && $args['region'] !== 'us-east-1'
+        ) {
+            return false;
+        }
+
+        if (!isset($args['region'])
+            && ConfigurationResolver::resolve('region', '', 'string') !== 'us-east-1'
+        ) {
+            return false;
+        }
+
+        $key = 'AWS::S3::UseGlobalEndpoint';
+        $result = $args['s3_us_east_1_regional_endpoint'] instanceof \Closure ?
+            $args['s3_us_east_1_regional_endpoint']()->wait() : $args['s3_us_east_1_regional_endpoint'];
+
+        if (is_string($result)) {
+            if ($result === 'regional') {
+                $value = false;
+            } else if ($result === 'legacy') {
+                $value = true;
+            } else {
+                return;
+            }
+        } else {
+            if ($result->isFallback()
+                || $result->getEndpointsType() === 'legacy'
+            ) {
+                $value = true;
+            } else {
+                $value = false;
+            }
+        }
+        $this->clientBuiltIns[$key] = $value;
+    }
+
     /** @internal */
     public static function _applyRetryConfig($value, $args, HandlerList $list)
     {
@@ -663,19 +902,21 @@ class S3Client extends AwsClient implements S3ClientInterface
                                     && $attempts < $config->getMaxAttempts()
                                 ) {
                                     if (!empty($result->getResponse())
-                                        && strpos(
-                                            $result->getResponse()->getBody(),
-                                            'Your socket connection to the server'
-                                        ) !== false
+                                        && $result->getResponse()->getStatusCode() >= 400
                                     ) {
-                                        $isRetryable = false;
+                                        return strpos(
+                                                $result->getResponse()->getBody(),
+                                                'Your socket connection to the server'
+                                            ) !== false;
                                     }
+
                                     if ($result->getPrevious() instanceof RequestException
                                         && $cmd->getName() !== 'CompleteMultipartUpload'
                                     ) {
                                         $isRetryable = true;
                                     }
                                 }
+
                                 return $isRetryable;
                             }
                         ]
@@ -691,13 +932,16 @@ class S3Client extends AwsClient implements S3ClientInterface
     {
         ClientResolver::_apply_api_provider($value, $args);
         $args['parser'] = new GetBucketLocationParser(
-            new AmbiguousSuccessParser(
-                new RetryableMalformedResponseParser(
-                    $args['parser'],
+            new ValidateResponseChecksumParser(
+                new AmbiguousSuccessParser(
+                    new RetryableMalformedResponseParser(
+                        $args['parser'],
+                        $args['exception_class']
+                    ),
+                    $args['error_parser'],
                     $args['exception_class']
                 ),
-                $args['error_parser'],
-                $args['exception_class']
+                $args['api']
             )
         );
     }
@@ -711,6 +955,28 @@ class S3Client extends AwsClient implements S3ClientInterface
         $b64 = '<div class="alert alert-info">This value will be base64 encoded on your behalf.</div>';
         $opt = '<div class="alert alert-info">This value will be computed for you it is not supplied.</div>';
 
+        // Add a note on the CopyObject docs
+         $s3ExceptionRetryMessage = "<p>Additional info on response behavior: if there is"
+            . " an internal error in S3 after the request was successfully recieved,"
+            . " a 200 response will be returned with an <code>S3Exception</code> embedded"
+            . " in it; this will still be caught and retried by"
+            . " <code>RetryMiddleware.</code></p>";
+
+        $docs['operations']['CopyObject'] .=  $s3ExceptionRetryMessage;
+        $docs['operations']['CompleteMultipartUpload'] .=  $s3ExceptionRetryMessage;
+        $docs['operations']['UploadPartCopy'] .=  $s3ExceptionRetryMessage;
+        $docs['operations']['UploadPart'] .=  $s3ExceptionRetryMessage;
+
+        // Add note about stream ownership in the putObject call
+        $guzzleStreamMessage = "<p>Additional info on behavior of the stream"
+            . " parameters: Psr7 takes ownership of streams and will automatically close"
+            . " streams when this method is called with a stream as the <code>Body</code>"
+            . " parameter.  To prevent this, set the <code>Body</code> using"
+            . " <code>GuzzleHttp\Psr7\stream_for</code> method with a is an instance of"
+            . " <code>Psr\Http\Message\StreamInterface</code>, and it will be returned"
+            . " unmodified. This will allow you to keep the stream in scope. </p>";
+        $docs['operations']['PutObject'] .=  $guzzleStreamMessage;
+
         // Add the SourceFile parameter.
         $docs['shapes']['SourceFile']['base'] = 'The path to a file on disk to use instead of the Body parameter.';
         $api['shapes']['SourceFile'] = ['type' => 'string'];
@@ -722,9 +988,13 @@ class S3Client extends AwsClient implements S3ClientInterface
         $api['shapes']['ContentSHA256'] = ['type' => 'string'];
         $api['shapes']['PutObjectRequest']['members']['ContentSHA256'] = ['shape' => 'ContentSHA256'];
         $api['shapes']['UploadPartRequest']['members']['ContentSHA256'] = ['shape' => 'ContentSHA256'];
-        unset($api['shapes']['PutObjectRequest']['members']['ContentMD5']);
-        unset($api['shapes']['UploadPartRequest']['members']['ContentMD5']);
         $docs['shapes']['ContentSHA256']['append'] = $opt;
+
+        // Add the AddContentMD5 parameter.
+        $docs['shapes']['AddContentMD5']['base'] = 'Set to true to calculate the ContentMD5 for the upload.';
+        $api['shapes']['AddContentMD5'] = ['type' => 'boolean'];
+        $api['shapes']['PutObjectRequest']['members']['AddContentMD5'] = ['shape' => 'AddContentMD5'];
+        $api['shapes']['UploadPartRequest']['members']['AddContentMD5'] = ['shape' => 'AddContentMD5'];
 
         // Add the SaveAs parameter.
         $docs['shapes']['SaveAs']['base'] = 'The path to a file on disk to save the object data.';
@@ -758,9 +1028,20 @@ class S3Client extends AwsClient implements S3ClientInterface
             "sa-east-1",
         ];
 
-        // Add a note that the ContentMD5 is optional.
+        // Add a note that the ContentMD5 is automatically computed, except for with PutObject and UploadPart
         $docs['shapes']['ContentMD5']['append'] = '<div class="alert alert-info">The value will be computed on '
             . 'your behalf.</div>';
+        $docs['shapes']['ContentMD5']['excludeAppend'] = ['PutObjectRequest', 'UploadPartRequest'];
+
+        //Add a note to ContentMD5 for PutObject and UploadPart that specifies the value is required
+        // When uploading to a bucket with object lock enabled and that it is not computed automatically
+        $objectLock = '<div class="alert alert-info">This value is required if uploading to a bucket '
+            . 'which has Object Lock enabled. It will not be calculated for you automatically. If you wish to have '
+            . 'the value calculated for you, use the `AddContentMD5` parameter.</div>';
+        $docs['shapes']['ContentMD5']['appendOnly'] = [
+            'message' => $objectLock,
+            'shapes' => ['PutObjectRequest', 'UploadPartRequest']
+        ];
 
         return [
             new Service($api, ApiProvider::defaultProvider()),
@@ -823,4 +1104,17 @@ class S3Client extends AwsClient implements S3ClientInterface
 
         return $examples;
     }
+
+    /**
+     * @param CommandInterface $command
+     * @return array|mixed|null
+     */
+    private function getSignatureVersionFromCommand(CommandInterface $command)
+    {
+        $signatureVersion = empty($command->getAuthSchemes())
+            ? $this->getConfig('signature_version')
+            : $command->getAuthSchemes()['version'];
+        return $signatureVersion;
+    }
+
 }

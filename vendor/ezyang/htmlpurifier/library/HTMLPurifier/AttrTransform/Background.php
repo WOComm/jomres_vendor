@@ -1,5 +1,5 @@
 <?php
-#[AllowDynamicProperties]
+
 /**
  * Pre-transform that changes proprietary background attribute to CSS.
  */

@@ -1,5 +1,5 @@
 <?php
-#[AllowDynamicProperties]
+
 /**
  * Parses string representations into their corresponding native PHP
  * variable type. The base implementation does a simple type-check.

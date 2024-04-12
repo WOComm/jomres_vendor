@@ -1,5 +1,7 @@
 <?php
 
+// File generated from our OpenAPI spec
+
 namespace Stripe\Service;
 
 class TransferService extends \Stripe\Service\AbstractService
@@ -14,7 +16,7 @@ class TransferService extends \Stripe\Service\AbstractService
      *
      * @throws \Stripe\Exception\ApiErrorException if the request fails
      *
-     * @return \Stripe\Collection
+     * @return \Stripe\Collection<\Stripe\Transfer>
      */
     public function all($params = null, $opts = null)
     {
@@ -34,7 +36,7 @@ class TransferService extends \Stripe\Service\AbstractService
      *
      * @throws \Stripe\Exception\ApiErrorException if the request fails
      *
-     * @return \Stripe\Collection
+     * @return \Stripe\Collection<\Stripe\TransferReversal>
      */
     public function allReversals($parentId, $params = null, $opts = null)
     {

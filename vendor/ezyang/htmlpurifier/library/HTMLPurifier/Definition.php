@@ -1,5 +1,5 @@
 <?php
-#[AllowDynamicProperties]
+
 /**
  * Super-class for definition datatype objects, implements serialization
  * functions for the class.

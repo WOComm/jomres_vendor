@@ -3,7 +3,6 @@
 /**
  * Validates the border property as defined by CSS.
  */
-#[AllowDynamicProperties]
 class HTMLPurifier_AttrDef_CSS_Border extends HTMLPurifier_AttrDef
 {
 

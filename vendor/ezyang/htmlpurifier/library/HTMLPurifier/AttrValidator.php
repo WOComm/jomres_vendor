@@ -1,5 +1,5 @@
 <?php
-#[AllowDynamicProperties]
+
 /**
  * Validates the attributes of a token. Doesn't manage required attributes
  * very well. The only reason we factored this out was because RemoveForeignElements

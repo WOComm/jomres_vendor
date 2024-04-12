@@ -1,5 +1,5 @@
 <?php
-#[AllowDynamicProperties]
+
 /**
  * HTML Purifier's internal representation of a URI.
  * @note

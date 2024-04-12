@@ -1,5 +1,5 @@
 <?php
-#[AllowDynamicProperties]
+
 /**
  * Property list iterator. Do not instantiate this class directly.
  */
@@ -29,6 +29,7 @@ class HTMLPurifier_PropertyListIterator extends FilterIterator
     /**
      * @return bool
      */
+    #[\ReturnTypeWillChange]
     public function accept()
     {
         $key = $this->getInnerIterator()->key();

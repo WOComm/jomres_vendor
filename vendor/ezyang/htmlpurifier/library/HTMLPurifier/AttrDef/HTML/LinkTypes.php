@@ -1,5 +1,5 @@
 <?php
-#[AllowDynamicProperties]
+
 /**
  * Validates a rel/rev link attribute against a directive of allowed values
  * @note We cannot use Enum because link types allow multiple

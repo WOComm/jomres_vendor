@@ -1,5 +1,5 @@
 <?php
-#[AllowDynamicProperties]
+
 /**
  * Definition cache decorator class that saves all cache retrievals
  * to PHP's memory; good for unit tests or circumstances where

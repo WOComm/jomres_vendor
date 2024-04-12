@@ -39,7 +39,6 @@
  * without a lot of lookaheads to see when a tag is closed. This is a
  * limitation of the token system and some workarounds would be nice.
  */
-#[AllowDynamicProperties]
 class HTMLPurifier_Lexer
 {
 
@@ -48,6 +47,11 @@ class HTMLPurifier_Lexer
      * If it does, set to true.
      */
     public $tracksLineNumbers = false;
+
+    /**
+     * @type HTMLPurifier_EntityParser
+     */
+    private $_entity_parser;
 
     // -- STATIC ----------------------------------------------------------
 
@@ -97,7 +101,7 @@ class HTMLPurifier_Lexer
                         break;
                     }
 
-                    if (class_exists('DOMDocument', false) &&
+                    if (class_exists('DOMDocument') &&
                         method_exists('DOMDocument', 'loadHTML') &&
                         !extension_loaded('domxml')
                     ) {
@@ -307,8 +311,8 @@ class HTMLPurifier_Lexer
     {
         // normalize newlines to \n
         if ($config->get('Core.NormalizeNewlines')) {
-            $html = str_replace("\r\n", "\n", $html);
-            $html = str_replace("\r", "\n", $html);
+            $html = str_replace("\r\n", "\n", (string)$html);
+            $html = str_replace("\r", "\n", (string)$html);
         }
 
         if ($config->get('HTML.Trusted')) {
@@ -352,7 +356,7 @@ class HTMLPurifier_Lexer
         $hidden_elements = $config->get('Core.HiddenElements');
         if ($config->get('Core.AggressivelyRemoveScript') &&
             !($config->get('HTML.Trusted') || !$config->get('Core.RemoveScriptContents')
-                || empty($hidden_elements["script"]))) {
+            || empty($hidden_elements["script"]))) {
             $html = preg_replace('#<script[^>]*>.*?</script>#i', '', $html);
         }
 

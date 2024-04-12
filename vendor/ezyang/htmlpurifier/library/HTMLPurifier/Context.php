@@ -1,5 +1,5 @@
 <?php
-#[AllowDynamicProperties]
+
 /**
  * Registry object that contains information about the current context.
  * @warning Is a bit buggy when variables are set to null: it thinks

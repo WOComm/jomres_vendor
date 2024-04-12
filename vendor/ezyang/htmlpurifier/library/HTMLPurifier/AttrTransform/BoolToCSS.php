@@ -1,5 +1,5 @@
 <?php
-#[AllowDynamicProperties]
+
 /**
  * Pre-transform that changes converts a boolean attribute to fixed CSS
  */

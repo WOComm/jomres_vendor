@@ -1,5 +1,5 @@
 <?php
-#[AllowDynamicProperties]
+
 /**
  * Registry for retrieving specific URI scheme validator objects.
  */

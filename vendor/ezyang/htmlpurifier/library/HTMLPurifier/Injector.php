@@ -1,5 +1,5 @@
 <?php
-#[AllowDynamicProperties]
+
 /**
  * Injects tokens into the document while parsing for well-formedness.
  * This enables "formatter-like" functionality such as auto-paragraphing,
